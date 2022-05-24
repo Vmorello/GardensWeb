@@ -2,8 +2,7 @@ import pymongo
 import json
 from bson.json_util import dumps as bson_dumps
 import datetime
-import constants
-import urllib 
+import db.constants as constants 
 
 from pprint import pprint 
 
