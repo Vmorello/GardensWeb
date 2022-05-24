@@ -11,7 +11,7 @@ from pprint import pprint
 class db_interface:
     def __init__(self) -> None:
         self.client = pymongo.MongoClient(
-            f"mongodb://{constants.mongo_svr_ip}:27017")
+            f"mongodb://localhost:27017")
             #admin:{urllib.parse.quote(constants.mongo_pw)}@ username and password when needed
         self.db = self.client.sample_garden_db
         self.collection = self.db.garden_inventory
