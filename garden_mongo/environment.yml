@@ -1,0 +1,14 @@
+name: garden_web
+channels:
+  - conda-forge
+prefix: /opt/anaconda3/envs/garden_web
+dependencies:
+  - python=3.10
+  - pip
+  - nginx
+  - gunicorn
+  - uvicorn
+  - pip:
+    - pymongo
+    - pymongo[srv]
+    - falcon
