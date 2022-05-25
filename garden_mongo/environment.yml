@@ -12,3 +12,5 @@ dependencies:
     - pymongo
     - pymongo[srv]
     - falcon
+    - requests
+    - gunicorn

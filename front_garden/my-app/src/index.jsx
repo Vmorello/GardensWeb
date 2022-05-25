@@ -23,7 +23,7 @@ class GotPlant extends React.Component {
     const ctx = canvas.getContext("2d")
     set_up_canvas(canvas, ctx)
 
-    const ip_addr = "localhost:54545"
+    const ip_addr = "192.168.0.64:54545"
 
     const user = this.state.user
     fetch(`http://${ip_addr}/v0/get_list?user=${user}`)
