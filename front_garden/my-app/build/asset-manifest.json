@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/static/js/main.fc554360.js",
+    "main.js": "/static/js/main.08d7637c.js",
     "static/media/coriander.png": "/static/media/coriander.0a42498692294e04c0a3.png",
     "static/media/spinach.png": "/static/media/spinach.d24d055cd5550589ee40.png",
     "static/media/beet.png": "/static/media/beet.fe7d51101a0c8491cb4b.png",
@@ -10,9 +10,9 @@
     "static/media/garlic.png": "/static/media/garlic.f4bd3e755011eb60bf0a.png",
     "static/media/lettuce.png": "/static/media/lettuce.62fdb835f423a2a3b19c.png",
     "index.html": "/index.html",
-    "main.fc554360.js.map": "/static/js/main.fc554360.js.map"
+    "main.08d7637c.js.map": "/static/js/main.08d7637c.js.map"
   },
   "entrypoints": [
-    "static/js/main.fc554360.js"
+    "static/js/main.08d7637c.js"
   ]
 }
