@@ -1,18 +1,12 @@
 import {VisiblePlant} from './classes';
 
-// const canvas = document.querySelector("canvas")
-// const ctx = canvas.getContext("2d")
 
-export function set_up_canvas(canvas, ctx){
+export function set_up_canvas(canvas){ //, ctx
+
+    const ctx = canvas.getContext("2d")
 
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
-
-    // let plants
-    // function initilize(){
-    //     plants = []
-    // }
-    // initilize()
 
     canvas.addEventListener("click", (event)=> {
         const plant_selection = document.getElementById("plant_selection")

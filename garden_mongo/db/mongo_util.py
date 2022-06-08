@@ -2,7 +2,7 @@ import pymongo
 import json
 from bson.json_util import dumps as bson_dumps
 import datetime
-import db.constants as constants 
+# import db.constants as constants 
 
 from pprint import pprint 
 
@@ -10,10 +10,10 @@ from pprint import pprint
 class db_interface:
     def __init__(self) -> None:
         self.client = pymongo.MongoClient(
-            f"mongodb://localhost:27017")
+            f"mongodb+srv://vroccolli:vsPJGha4fFpxyrAO@cluster0.h8d28.mongodb.net/?retryWrites=true&w=majority")
             #admin:{urllib.parse.quote(constants.mongo_pw)}@ username and password when needed
         self.db = self.client.sample_garden_db
-        self.collection = self.db.garden_inventory
+        self.collection = self.db.sample_garden_inventory
         print("starting class & connecting to mongo")
 
 
@@ -21,7 +21,7 @@ class db_interface:
         """this is the documentation of add_new_garden"""
         garden_dict = {
             "owner":owner,
-            "plants": constants.new_garden,
+            "plants": [],#constants.new_garden,
             "grow_locations":[],
             "items":{
                 "pots":{},
@@ -66,6 +66,6 @@ if __name__ == "__main__":
     db_object = db_interface()
 
     # db_object.add_new_garden(constants.owner)
-    pprint(db_object.read_garden(constants.owner))
+    pprint(db_object.read_garden("Victorio_Natalie"))#constants.owner))
 
 

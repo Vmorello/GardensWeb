@@ -1,0 +1,8 @@
+{
+    "name": "giardino",
+    "scripts": {
+        "prebuild": "cd garden_mongo && gunicorn -b 0.0.0.0:9110 app:app --reload --daemon",
+        "build": "cd front_garden/my-app && npm run start",
+        "postbuild": "pwd"
+    }
+}
