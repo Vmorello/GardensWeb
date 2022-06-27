@@ -2,16 +2,14 @@ import pymongo
 import json
 from bson.json_util import dumps as bson_dumps
 import datetime
-# import db.constants as constants 
+import db.constants as constants 
 
 from pprint import pprint 
 
 
 class db_interface:
     def __init__(self) -> None:
-        self.client = pymongo.MongoClient(
-            f"mongodb+srv://vroccolli:vsPJGha4fFpxyrAO@cluster0.h8d28.mongodb.net/?retryWrites=true&w=majority")
-            #admin:{urllib.parse.quote(constants.mongo_pw)}@ username and password when needed
+        self.client = pymongo.MongoClient(constants.mongo_conn_string)
         self.db = self.client.sample_garden_db
         self.collection = self.db.sample_garden_inventory
         print("starting class & connecting to mongo")

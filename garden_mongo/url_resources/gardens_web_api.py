@@ -16,20 +16,20 @@ class GardensWebAPI:
     def __init__(self):
         self.db_garden = db_interface()
 
-
-    #This is used on a info read request, public, and uses url paramaters. Good for links & histories
-    def on_get(self, req: Request, resp: Response):
-        """Handles GET requests"""
-        try:
-            owner = req.params["user"]
-        except KeyError:
-            resp.status = falcon.HTTP_400
-            resp.text = json.dumps({"key": "Missing_user"})
-            return
+    
+    # #This is used on a info read request, public, and uses url paramaters. Good for links & histories
+    # def on_get(self, req: Request, resp: Response):
+    #     """Handles GET requests"""
+    #     try:
+    #         owner = req.params["user"]
+    #     except KeyError:
+    #         resp.status = falcon.HTTP_400
+    #         resp.text = json.dumps({"key": "Missing_user"})
+    #         return
         
-        result = self.db_garden.read_garden(owner)
-        resp.status = falcon.HTTP_200 
-        resp.text = json.dumps({"Garden": result}) #TODO ===========
+    #     result = self.db_garden.read_garden(owner)
+    #     resp.status = falcon.HTTP_200 
+    #     resp.text = json.dumps({"Garden": result}) #TODO ===========
     
 
     #This is used to info write request, uses the request body to store the write

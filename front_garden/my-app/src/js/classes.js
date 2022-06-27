@@ -10,7 +10,6 @@ export class VisiblePlant{
         this.x = x
         this.y = y
         this.draw_once(ctx)
-        // this.ctx = ctx
         }
 
     draw_once(ctx){

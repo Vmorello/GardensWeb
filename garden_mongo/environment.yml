@@ -3,7 +3,7 @@ channels:
   - conda-forge
 prefix: /opt/anaconda3/envs/garden_web
 dependencies:
-  - python=3.10
+  - python=3.11
   - pip
   - nginx
   - gunicorn

@@ -1,6 +1,8 @@
-mongo_svr_ip = "192.168.0.64"
+# mongo_svr_ip = "192.168.0.64"
 
-owner = "Victorio_Natalie"
+# owner = "Victorio_Natalie"
+
+mongo_conn_string = f"mongodb+srv://vroccolli:vsPJGha4fFpxyrAO@cluster0.h8d28.mongodb.net/?retryWrites=true&w=majority"
 
 
 # Currently avlaiable images:
@@ -41,8 +43,7 @@ new_garden = [{
     "name":"green_onion",
     "amount": 1,
     "image":"green_onion"
-},
-{
+},{
     "name":"generic",
     "amount": 1,
     "image":"generic"
@@ -101,10 +102,8 @@ new_garden = [{
 #     "image":"generic"
 # }
 # ],
-    # "grow_locations":[],
-    # "items":{
-    #     "pots":{},
-    # }
+    # "grow_locations":{"width":10, "length":10},
+
 #  }
 
 
