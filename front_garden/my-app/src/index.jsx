@@ -152,11 +152,11 @@ class GotPlant extends React.Component {
 
       if(index === -1){//doesnt exist yet
         planted_list.push({"name":plant_selected.value, "amount":1,
-        "locations":[{"num":this.number_plants,"x":event.clientX, "y":event.clientY}]})
+        "locations":[{"order":this.number_plants,"x":event.clientX, "y":event.clientY}]})
       }
       else{
         planted_list[index]["amount"] += 1
-        planted_list[index]["locations"].push({"num":this.number_plants,"x":event.clientX, "y":event.clientY})
+        planted_list[index]["locations"].push({"order":this.number_plants,"x":event.clientX, "y":event.clientY})
       }
       this.number_plants++
       // const new_amount = planted_list[plant_selected.value] + 1 || 1

@@ -44,7 +44,7 @@ class db_interface:
         #TODO the mongo way below
         plant_list = []
         for plant in json_results["plants"]:
-            plant_list += [{"plant":plant["name"],"x":entry["x"],"y":entry["y"],"order":entry["num"]}
+            plant_list += [{"plant":plant["name"],"x":entry["x"],"y":entry["y"],"order":entry["order"]}
                                     for entry in plant["locations"]]
         def sort_by_order(dict):
             return dict["order"]
