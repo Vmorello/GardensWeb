@@ -1,35 +1,28 @@
 import {VisiblePlant} from './classes';
 
+
 export class CanvasUtil{
-    constructor (canvas, plant_list=null) {
+    constructor (canvas, ) {
             this.canvas = canvas
             this.ctx = this.canvas.getContext("2d")
-            this.plant_list = plant_list
         }
 
-    set_up_canvas(){ 
+    set_up_canvas_clicks(){ 
         this.canvas.addEventListener("click", (event)=> {
-            const plant_selection = document.getElementById("plant_selection")
-            console.log(plant_selection.value)
-            //const new_plant = 
-            new VisiblePlant(this.ctx, plant_selection.value, event.clientX, event.clientY)
-            // plants.push(new_plant)
-    
+            const plant_selected = document.getElementById("plant_selection")
+            //console.log(event)
+            new VisiblePlant(this.ctx, plant_selected.value, event.layerX, event.layerY)
         })
+    }
+
+    load(plant_list){
+        plant_list.forEach(plant => {
+            new VisiblePlant(this.ctx, plant["plant"], plant["x"], plant["y"])
+        });
+    }
+
+    clear(){
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
     
 }
-// export function set_up_canvas(canvas){ 
-
-//     const ctx = canvas.getContext("2d")
-
-//     canvas.addEventListener("click", (event)=> {
-//         const plant_selection = document.getElementById("plant_selection")
-//         console.log(plant_selection.value)
-//         // console.log(ctx)
-//         //const new_plant = 
-//         new VisiblePlant(ctx, plant_selection.value, event.clientX, event.clientY)
-//         // plants.push(new_plant)
-
-//     })
-// }
