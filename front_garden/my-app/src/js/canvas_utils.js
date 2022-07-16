@@ -1,8 +1,8 @@
-import {VisiblePlant} from './classes';
+import {VisiblePlant} from './plant_object';
 
 
 export class CanvasUtil{
-    constructor (canvas, ) {
+    constructor (canvas) {
             this.canvas = canvas
             this.ctx = this.canvas.getContext("2d")
         }
@@ -10,7 +10,6 @@ export class CanvasUtil{
     set_up_canvas_clicks(){ 
         this.canvas.addEventListener("click", (event)=> {
             const plant_selected = document.getElementById("plant_selection")
-            //console.log(event)
             new VisiblePlant(this.ctx, plant_selected.value, event.layerX, event.layerY)
         })
     }
@@ -24,5 +23,4 @@ export class CanvasUtil{
     clear(){
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
-    
 }

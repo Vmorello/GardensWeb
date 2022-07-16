@@ -2,60 +2,68 @@ import pymongo
 import json
 from bson.json_util import dumps as bson_dumps
 import datetime
-import db.constants as constants
+import db_util
 
 from pprint import pprint
 
+#import db.constants as constants
+mongo_conn_string = f"mongodb+srv://vroccolli:vsPJGha4fFpxyrAO@cluster0.h8d28.mongodb.net/?retryWrites=true&w=majority"
+
 
 class db_interface:
+    """builds a connection to the MongoDB cluster with operations to operate GotPlant"""
     def __init__(self) -> None:
-        self.client = pymongo.MongoClient(constants.mongo_conn_string)
+        self.client = pymongo.MongoClient(mongo_conn_string)
         self.db = self.client.sample_garden_db
         self.collection = self.db.sample_garden_inventory
         print("starting class & connecting to mongo")
 
     def add_new_garden(self, owner: str):
-        """this is the documentation of add_new_garden"""
+        """Adds a new user to db\n
+            input: owner
+        """
         garden_dict = {
             "owner": owner,
-            "plants": [],  #constants.new_garden,
+            "plants": [],
+            "grow_location": {},
         }
         self.collection.insert_one(garden_dict)
-        print("we injected a new garden")
-
-    def read_garden(self, owner: str):
-        results = self.collection.find_one({"owner": owner})
-        json_results = parse_to_json(results)
-        return json_results
-
-    def get_list_of_plants(self, owner: str):
-        results = self.collection.find_one({"owner": owner}, {
-            "plants.name": 1,
-            "plants.image": 1
-        })
-        json_results = parse_to_json(results)
-        # pprint(json_results["plants"])
-        return json_results["plants"]
+        #print("Injected a new garden")
+        return
 
     def load_plot(self, owner: str):
+        """loads a db_entry of a given user & makes a sorted list for canvas\n
+            input: owner
+            output: {"db_entry" , "canvas_list"}
+        """
         results = self.collection.find_one({"owner": owner})
         json_results = parse_to_json(results)
 
-        #TODO the mongo way below
-        plant_list = []
-        for plant in json_results["plants"]:
-            plant_list += [{"plant":plant["name"],"x":entry["x"],"y":entry["y"],"order":entry["order"]}
-                                    for entry in plant["locations"]]
-        def sort_by_order(dict):
-            return dict["order"]
-        plant_list.sort(key= sort_by_order)
+        plant_list = db_util.sort_db_for_canvas(json_results)
 
-        #pprint(plant_list)
-        return {"db_entry":json_results,
-                "canvas_list":plant_list}
+        return {"db_entry": json_results, "canvas_list": plant_list}
 
+    def save_plot(self, owner: str, plant_list: list, length: int, width: int):
+        """loads a db_entry of a given user & makes a sorted list for canvas\n
+            input: owner, plant_list inserted in canavs, length, width (both of canvas)
+        """
+        save_result = self.collection.update_one({"owner": owner}, {
+            "$set": {
+                "plants": plant_list,
+                "grow_location": {
+                    "length": length,
+                    "width": width
+                }
+            }
+        })
+        return
 
     def add_plant(self, owner: str, plant: str, amount: int = 1):
+        """Adds a new plant to a given user\n
+            input: owner, plant_name, amount:opt
+            output: 
+            NEEDS REWORK
+        """
         date = datetime.datetime.now()
         result = self.collection.update_one({"owner": owner}, {
             "$push": {
@@ -66,22 +74,20 @@ class db_interface:
                 }
             }
         })
-
         return result
 
-    def save_plot(self, owner: str, plant_list: list, length: int, width: int):
-        print(f"trying to add {plant_list} with {owner=}")
-        save_result = self.collection.update_one({"owner": owner}, {
-            "$set": {
-                "plants": plant_list,
-                "grow_location": {
-                    "length": length,
-                    "width": width
-                }
-            }
+    def get_list_of_plants(self, owner: str):
+        """gets a list of plants\n
+            input: owner
+            output: list of plants 
+            NEEDS REWORK
+        """
+        results = self.collection.find_one({"owner": owner}, {
+            "plants.name": 1,
+            "plants.image": 1
         })
-        print(f"{save_result=}")
-        return
+        json_results = parse_to_json(results)
+        return json_results["plants"]
 
 
 def parse_to_json(data):
@@ -91,5 +97,4 @@ def parse_to_json(data):
 if __name__ == "__main__":
     db_object = db_interface()
 
-    #db_object.add_new_garden(constants.owner)
-    pprint(db_object.read_garden("Victorio_Natalie"))  #constants.owner))
+    pprint(db_object.read_garden("Victorio_Natalie"))
