@@ -2,7 +2,7 @@ import pymongo
 import json
 from bson.json_util import dumps as bson_dumps
 import datetime
-import db_util
+from db.db_util import sort_db_for_canvas
 
 from pprint import pprint
 
@@ -39,7 +39,7 @@ class db_interface:
         results = self.collection.find_one({"owner": owner})
         json_results = parse_to_json(results)
 
-        plant_list = db_util.sort_db_for_canvas(json_results)
+        plant_list = sort_db_for_canvas(json_results)
 
         return {"db_entry": json_results, "canvas_list": plant_list}
 

@@ -16,7 +16,7 @@ export class CanvasUtil{
 
     load(plant_list){
         plant_list.forEach(plant => {
-            new VisiblePlant(this.ctx, plant["plant"], plant["x"], plant["y"])
+            new VisiblePlant(this.ctx, plant["plant"], plant["x"], plant["y"]) 
         });
     }
 
