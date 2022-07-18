@@ -68,14 +68,16 @@ class GotPlant extends React.Component {
         <canvas ref={this.canvas_ref} style={{border:"3px dotted #000000"}}
           width={this.state.width} height={this.state.length}
           onClick={this.added_plant()} />
+        <div><button onClick={this.save_plot()}>Save</button></div>
         <PlantedList plant_list={this.state.plants_inserted}/>
-        <button onClick={this.save_plot()}>Save</button>
       </div>
     )
   }
+
+  // -------- Event Functions & Util -------------// 
+
   clear_button() {
     return ((event) => {
-        this.canvas_util.clear()
         this.set_plants_empty()
     })
   }
@@ -91,6 +93,7 @@ class GotPlant extends React.Component {
   }
 
   set_plants_empty() {
+      this.canvas_util.clear()
       this.number_plants = 0
       this.setState({
           plants_inserted: []
@@ -117,13 +120,12 @@ class GotPlant extends React.Component {
                       "length": this.state.length
                   }),
               })
-              .then((response) => {
-                  return response
-              })
               .then(() => {
+                      alert(`Request to save under ${this.state.user} sent`)
                       console.log("request to save sent")
                   },
                   (error) => {
+                      alert("Could not reach DB")
                       console.log("request to save failed")
                   })
       })
@@ -136,14 +138,18 @@ class GotPlant extends React.Component {
    */
   load() {
       return ((event) => {
+          this.set_plants_empty()
           fetch(`http://${this.ip_addr}/v0/load?user=${this.state.user}`)
               .then(response => {
                       return response.json()
                   },
                   error => {
-                      console.log("Could not connect to DB")
+                      alert("Could not reach DB")
                   })
               .then(response => {
+                  if (response["canvas_list"].length === 0){
+                    alert("Load is empty")
+                  }
                   this.canvas_util.load(response["canvas_list"])
                   this.setState({
                       plants_inserted: response["db_entry"]["plants"],
@@ -197,6 +203,8 @@ class GotPlant extends React.Component {
   }
 }
 
+// ----------- State-less React Components ------------- // 
+
 function PlantedList(props){
   const plantList = props.plant_list.map((plant) => 
       <div> You got {plant.amount} {plant.name} planted in the garden </div>
@@ -205,7 +213,6 @@ function PlantedList(props){
 }
 
 function PlantDropdown(props){  
-    if (props.plant_options) {   
       const listItems = props.plant_options.map((plant) => 
             <option value={plant.name}>{plant.name}</option>
           )
@@ -216,12 +223,7 @@ function PlantDropdown(props){
             {listItems}
           </select>
         </div>
-      )} 
-    else {
-      return(
-        <div>MongoDB has not been started</div>
-      )}
-  //}
+      )
 }
 
 // ========================================

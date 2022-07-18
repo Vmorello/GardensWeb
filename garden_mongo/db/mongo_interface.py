@@ -36,7 +36,7 @@ class db_interface:
             input: owner
             output: {"db_entry" , "canvas_list"}
         """
-        results = self.collection.find_one({"owner": owner})
+        results = self.collection.find_one(filter= {"owner": owner})
         json_results = parse_to_json(results)
 
         plant_list = sort_db_for_canvas(json_results)
@@ -47,15 +47,18 @@ class db_interface:
         """loads a db_entry of a given user & makes a sorted list for canvas\n
             input: owner, plant_list inserted in canavs, length, width (both of canvas)
         """
-        save_result = self.collection.update_one({"owner": owner}, {
-            "$set": {
-                "plants": plant_list,
-                "grow_location": {
-                    "length": length,
-                    "width": width
-                }
-            }
-        })
+        save_result = self.collection.update_one(filter={"owner": owner}, 
+            update= {
+                "$set": {
+                    "plants": plant_list,
+                    "grow_location": {
+                        "length": length,
+                        "width": width
+                    }
+                }},
+            upsert= True 
+            )
+        pprint(save_result)
         return
 
     def add_plant(self, owner: str, plant: str, amount: int = 1):
@@ -65,15 +68,16 @@ class db_interface:
             NEEDS REWORK
         """
         date = datetime.datetime.now()
-        result = self.collection.update_one({"owner": owner}, {
-            "$push": {
-                "plants": {
-                    "name": plant,
-                    "amount": amount,
-                    "add_date": date
+        result = self.collection.update_one(filter={"owner": owner}, 
+            update = {
+                "$push": {
+                    "plants": {
+                        "name": plant,
+                        "amount": amount,
+                        "add_date": date
+                    }
                 }
-            }
-        })
+            })
         return result
 
     def get_list_of_plants(self, owner: str):
