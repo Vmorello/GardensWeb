@@ -7,10 +7,10 @@ dependencies:
   - pip
   - nginx
   - gunicorn
-  - uvicorn
   - pip:
     - pymongo
     - pymongo[srv]
     - falcon
     - requests
     - gunicorn
+    - pytest

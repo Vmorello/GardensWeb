@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import {CanvasUtil} from './js/canvas_utils';
+import {CanvasControl} from './js/canvas_utils';
 import {default_plant_list} from './js/plant_image_lookup';
 
 
@@ -25,7 +25,7 @@ class GotPlant extends React.Component {
   // This function happen once the component is mounted the first time
   componentDidMount() {
       const canvas = this.canvas_ref.current
-      this.canvas_util = new CanvasUtil(canvas)
+      this.canvas_util = new CanvasControl(canvas)
       this.canvas_util.set_up_canvas_clicks(this.added_plant)
 
       fetch(`http://${this.ip_addr}/v0/health`)

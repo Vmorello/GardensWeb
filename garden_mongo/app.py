@@ -10,7 +10,7 @@ app.add_route('/v0/health', garden_api, suffix="health")
 app.add_route('/v0/save_plot', garden_api, suffix="save")
 app.add_route('/v0/load', garden_api, suffix="load")
 # app.add_route('/v0/add_{plant}', garden_api, suffix="add")
-# app.add_route('/v0/get_list', garden_api, suffix="list")
+app.add_route('/v0/get_list', garden_api, suffix="list")
 
 
 
