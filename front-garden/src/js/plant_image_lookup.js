@@ -12,6 +12,7 @@ import cucumber from '../images/cucumber.png';
 import kale from '../images/kale.png';
 import tomato from '../images/tomato.png';
 import zucchini from '../images/zucchini.png';
+import dark from '../images/darkness.png';
 
 //TODO put these 2 together 
 // convert string input to aboved mapped imported image
@@ -32,12 +33,13 @@ const dict = {"generic":generic,
         }
 
 export const default_plant_list = [
-    //{"name":"generic","image":"generic"},
+    {"name":"cherry_tomato","image":"cherry_tomato"},
+    {"name":"generic","image":"generic"},
     {"name":"basil","image":"basil"},
     {"name":"beans","image":"beans"},
     {"name":"beet","image":"beet"},
     {"name":"coriander","image":"coriander"},
-    {"name":"cherry_tomato","image":"cherry_tomato"},
+    
     {"name":"cucumber","image":"cucumber"},
     {"name":"garlic","image":"garlic"},
     {"name":"green_onion","green_onion":"generic"},
