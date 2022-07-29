@@ -12,7 +12,7 @@ import cucumber from '../images/cucumber.png';
 import kale from '../images/kale.png';
 import tomato from '../images/tomato.png';
 import zucchini from '../images/zucchini.png';
-import dark from '../images/darkness.png';
+//import dark from '../images/darkness.png';
 
 //TODO put these 2 together 
 // convert string input to aboved mapped imported image
@@ -39,7 +39,6 @@ export const default_plant_list = [
     {"name":"beans","image":"beans"},
     {"name":"beet","image":"beet"},
     {"name":"coriander","image":"coriander"},
-    
     {"name":"cucumber","image":"cucumber"},
     {"name":"garlic","image":"garlic"},
     {"name":"green_onion","green_onion":"generic"},

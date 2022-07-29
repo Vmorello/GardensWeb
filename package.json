@@ -2,7 +2,7 @@
     "name": "giardino",
     "scripts": {
         "predev": "cd garden_mongo && gunicorn -b 0.0.0.0:9110 app:app --reload --daemon",
-        "dev": "cd front_garden/my-app && npm run start",
-        "postdev": "pwd"
+        "dev": "cd front-garden && npm run start",
+        "postdev": "echo 'done done'"
     }
 }
