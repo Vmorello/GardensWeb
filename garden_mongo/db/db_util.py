@@ -4,13 +4,8 @@ def sort_db_for_canvas(json_results):
     for plant in json_results["plants"]:
         plant_list += [{
             "plant": plant["name"],
-            "x": entry["x"],
-            "y": entry["y"],
-            "order": entry["order"]
-        } for entry in plant["locations"]]
-
-    def sort_by_order(dict):
-        return dict["order"]
-
-    plant_list.sort(key=sort_by_order)
+            "x": plant["x"],
+            "y": plant["y"],
+            "order": plant["id"]
+        }]
     return plant_list

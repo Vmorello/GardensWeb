@@ -15,8 +15,11 @@ class GotPlant extends React.Component {
           all_plant_info: [],
           length: props.length,
           width: props.width,
-          diary_x: props.width + 40, 
-          diary_y: 200
+          diary:{
+            x: props.width + 40,
+            y: 200,
+            plant_on_location: [],
+          }
           //db_connected: false
       }
       this.plant_options= default_plant_list
@@ -75,17 +78,12 @@ class GotPlant extends React.Component {
           width={this.state.width} height={this.state.length}
           onClick={this.canvas_onclick_switch()} />
         <div><button onClick={this.save_plot()}>Save</button></div>
-        <PlantedList plant_list={this.state.all_plant_info}/>
-        <div style={{
-            position: "absolute",
-            left: `${this.state.diary_x}px`,
-            top: `${this.state.diary_y}px`,
-            backgroundColor: 'yellowgreen'
-          }}>TEST BOOK</div>
+        {/* <PlantedList plant_list={this.state.all_plant_info}/> */}
+        <Diary diaryInfo={this.state.diary} dateClick={this.date_added()} />
       </div>
     )
   }
-  //this.added_plant()
+
   // -------- Event Functions & Util -------------// 
 
   clear_button() {
@@ -119,65 +117,6 @@ class GotPlant extends React.Component {
       })
   }
 
-  /**
-   * returns a function for react that sends a return to save:
-   * @json {"plant_list": this.state.all_plant_info, "owner":this.state.user,
-   *          "width": this.state.width, "length":this.state.length}
-   */
-  save_plot() {
-
-      return (() => {
-          fetch(`http://${this.ip_addr}/v0/save_plot`, {
-                  method: "POST",
-                  headers: {
-                      'Content-Type': 'application/json' //needs to match the body 
-                  },
-                  body: JSON.stringify({
-                      "plant_list": this.state.all_plant_info,
-                      "owner": this.state.user,
-                      "width": this.state.width,
-                      "length": this.state.length
-                  }),
-              })
-              .then(() => {
-                      alert(`Request to save under ${this.state.user} sent`)
-                      console.log("request to save sent")
-                  },
-                  (error) => {
-                      alert("Could not reach DB")
-                      console.log("request to save failed")
-                  })
-      })
-  }
-
-  /**
-   * returns a function for react that loads a db_entry & a sorted list for canvas:
-   * @json {"plant_list": this.state.all_plant_info, "owner":this.state.user,
-   *          "width": this.state.width, "length":this.state.length}
-   */
-  load() {
-      return ((event) => {
-          this.set_plants_empty()
-          fetch(`http://${this.ip_addr}/v0/load?user=${this.state.user}`)
-              .then(response => {
-                      return response.json()
-                  },
-                  error => {
-                      alert("Could not reach DB")
-                  })
-              .then(response => {
-                  if (response["canvas_list"].length === 0){
-                    alert("Load is empty")
-                  }
-                  this.canvas_util.visual_load(response["canvas_list"])
-                  this.setState({
-                      all_plant_info: response["db_entry"]["plants"],
-                      length: response["db_entry"]["grow_location"]["length"],
-                      width: response["db_entry"]["grow_location"]["width"],
-                  })
-              });
-      })
-  }
 
   canvas_onclick_switch(){
     if (this.state.mode === "place"){
@@ -194,44 +133,44 @@ class GotPlant extends React.Component {
             this.canvas_util.visual_draw(plant_selected, event.pageX, event.pageY)
 
             this.add_plant_info(plant_selected, event.pageX, event.pageY)
-            
+
         })
   }
 
+  
   select_plant() {
     return ((event) => {
-        
-        this.setState({
-                diary_x:event.pageX, 
-                diary_y:event.pageY
-            })
-        })
+
+      const x = event.pageX
+      const y = event.pageY
+      
+      const in_click_range = (plant) => {return plant["x"]+ 64 > x && 
+            plant["x"]- 64 < x && plant["y"]+ 64 > y && plant["y"]- 64 < y}
+
+      const plants_onlocation = this.state.all_plant_info.filter(in_click_range)
+
+      this.setState({
+              diary:{
+                    x:x, 
+                    y:y,
+                    plant_on_location: plants_onlocation
+                  }
+          })
+      })  
+
   }
 
   add_plant_info(plant_selected, x, y){
     const plant_info_slice = this.state.all_plant_info.slice()
 
-    const seach = (element) => element["name"] === plant_selected.value
-    const index = plant_info_slice.findIndex(seach)
+    plant_info_slice.push({
+        "name": plant_selected.value,
+        "x": x,
+        "y": y,
+        "data": [],
+        "id":this.number_plants
+    })
 
-    if (index === -1) { //doesnt exist yet
-        plant_info_slice.push({
-            "name": plant_selected.value,
-            "amount": 1,
-            "locations": [{
-                "order": this.number_plants,
-                "x": x,
-                "y": y
-            }]
-        })
-    } else {
-        plant_info_slice[index]["amount"] += 1
-        plant_info_slice[index]["locations"].push({
-            "order": this.number_plants,
-            "x": x,
-            "y": y
-        })
-    }
     this.number_plants++
 
     this.setState({
@@ -239,17 +178,158 @@ class GotPlant extends React.Component {
     })
   }
 
+  //================ Diary functions ============
+
+  date_added(){return (plant)=> (event)=>{
+        const label = document.getElementById(`label_insert_${plant.id}`).value 
+        const date  = document.getElementById(`date_insert_${plant.id}`).value 
+        
+        const img = this.extract_img(plant)
+
+        const plant_info_slice = this.state.all_plant_info.slice()
+
+        plant_info_slice[plant["id"]]["data"].push({"label":label,"date":date,"img":img})
+
+        this.setState({
+          all_plant_info: plant_info_slice
+        })
+
+        //console.log(plant_info_slice)
+    }  
+  } 
+
+  extract_img(plant){
+    const img_insert = document.getElementById(`img_insert_${plant.id}`)
+    const img_file  = img_insert.files[0]
+
+    if (typeof img_file === 'undefined') return {src:""}
+
+    const img = new Image()
+    img.src = URL.createObjectURL(img_file);
+    return img
+  }
+
+  //=============== Saving & Loading ===============
+  /**
+   * returns a function for react that sends a return to save:
+   * @json {"plant_list": this.state.all_plant_info, "owner":this.state.user,
+   *          "width": this.state.width, "length":this.state.length}
+   */
+  save_plot() {
+
+    return (() => {
+        fetch(`http://${this.ip_addr}/v0/save_plot`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json' //needs to match the body 
+                },
+                body: JSON.stringify({
+                    "plant_list": this.state.all_plant_info,
+                    "owner": this.state.user,
+                    "width": this.state.width,
+                    "length": this.state.length
+                }),
+            })
+            .then(() => {
+                    alert(`Request to save under ${this.state.user} sent`)
+                    console.log("request to save sent")
+                },
+                (error) => {
+                    alert("Could not reach DB")
+                    console.log("request to save failed")
+                })
+    })
+}
+
+/**
+ * returns a function for react that loads a db_entry & a sorted list for canvas:
+ * @json {"plant_list": this.state.all_plant_info, "owner":this.state.user,
+ *          "width": this.state.width, "length":this.state.length}
+ */
+load() {
+    return ((event) => {
+        this.set_plants_empty()
+        fetch(`http://${this.ip_addr}/v0/load?user=${this.state.user}`)
+            .then(response => {
+                    return response.json()
+                },
+                error => {
+                    alert("Could not reach DB")
+                })
+            .then(response => {
+                if (response["plants"].length === 0){
+                  alert("Load is empty")
+                }
+                this.canvas_util.visual_load(response["plants"])
+                this.setState({
+                    all_plant_info: response["plants"],
+                    length: response["grow_location"]["length"],
+                    width: response["grow_location"]["width"],
+                })
+            });
+    })
+}
+
   
 }
 
 // ----------- State-less React Components ------------- // 
+function Diary(props){
 
-function PlantedList(props){
-  const plantList = props.plant_list.map((plant) => 
-      <div> You got {plant.amount} {plant.name} planted in the garden </div>
-    )
-  return <div>{plantList}</div>
+  const plant_list =  props.diaryInfo.plant_on_location.map((plant) => {
+    return <div>
+      <b onClick={()=>{console.log(plant.name)}}> {plant.name} </b>
+      <DataListPlant plantData={plant.data} />
+      <div>
+        <input type="text" id={`label_insert_${plant.id}`} placeholder="What's up"></input>
+        <input type="date" id={`date_insert_${plant.id}`} ></input>
+        <button onClick={props.dateClick(plant)}>Submit a date</button>
+      </div>
+      <div>
+        <input type="file"  id={`img_insert_${plant.id}`} accept="image/*"></input>
+      </div>
+    </div>
+  })
+
+  return (<div style={{
+            position: "absolute",
+            left: `${props.diaryInfo.x}px`,
+            top: `${props.diaryInfo.y}px`,
+            backgroundColor: 'violet'
+          }}>{plant_list}</div>
+  )
 }
+
+
+function DataListPlant(props){
+  return props.plantData.map((data) => {
+    return <div> {data.label} {data.date} 
+      <DiaryImage src = {data.img.src}/>
+    </div>
+  })
+
+}
+
+function DiaryImage(props){
+  if (props.src === "") return (<span/>)
+  
+  return(
+    <img src={props.src} alt="lost in translation" style={{
+            display: "block",
+            height: "150px",
+            width: "150px"
+          }}/> 
+  )
+}
+    
+
+
+// function PlantedList(props){
+//   const plantList = props.plant_list.map((plant) => 
+//       <div> You got {plant.amount} {plant.name} planted in the garden </div>
+//     )
+//   return <div>{plantList}</div>
+// }
 
 function PlantDropdown(props){  
       const listItems = props.plant_options.map((plant) => 

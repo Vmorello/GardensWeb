@@ -39,9 +39,9 @@ class db_interface:
         results = self.collection.find_one(filter= {"owner": owner})
         json_results = parse_to_json(results)
 
-        plant_list = sort_db_for_canvas(json_results)
+        #plant_list = sort_db_for_canvas(json_results)
 
-        return {"db_entry": json_results, "canvas_list": plant_list}
+        return  json_results#, "canvas_list": plant_list
 
     def save_plot(self, owner: str, plant_list: list, length: int, width: int):
         """loads a db_entry of a given user & makes a sorted list for canvas\n
