@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 
 import {CanvasControl} from './js/canvas_utils';
 import {default_plant_list} from './js/plant_image_lookup';
+import {Diary} from './react/diary_components'
 
 
 class GotPlant extends React.Component {
@@ -71,14 +72,15 @@ class GotPlant extends React.Component {
             <input name="owner" value={this.state.user} 
                 onChange={this.set_state_onchange("user")}/> 
             <button onClick={this.load()}>Load</button>
+            <div><button onClick={this.save_plot()}>Save</button></div>
           </div>
-          <ModeDropdown current_mode={this.state.mode} onChange={this.set_state_onchange("mode")}/>
         </div>
         <canvas ref={this.canvas_ref} style={{border:"3px dotted #000000"}}
           width={this.state.width} height={this.state.length}
           onClick={this.canvas_onclick_switch()} />
-        <div><button onClick={this.save_plot()}>Save</button></div>
+        
         {/* <PlantedList plant_list={this.state.all_plant_info}/> */}
+        <ModeDropdown current_mode={this.state.mode} onChange={this.set_state_onchange("mode")}/>
         <Diary diaryInfo={this.state.diary} dateClick={this.date_added()} />
       </div>
     )
@@ -97,7 +99,7 @@ class GotPlant extends React.Component {
           this.setState({
               [side]: event.target.value,
           })
-          this.set_plants_empty()
+          this.set_plants_empty() 
       })
   }
 
@@ -161,9 +163,9 @@ class GotPlant extends React.Component {
   }
 
   add_plant_info(plant_selected, x, y){
-    const plant_info_slice = this.state.all_plant_info.slice()
+    const plant_info_copy = this.state.all_plant_info.slice()
 
-    plant_info_slice.push({
+    plant_info_copy.push({
         "name": plant_selected.value,
         "x": x,
         "y": y,
@@ -174,7 +176,7 @@ class GotPlant extends React.Component {
     this.number_plants++
 
     this.setState({
-        all_plant_info: plant_info_slice
+        all_plant_info: plant_info_copy
     })
   }
 
@@ -186,15 +188,15 @@ class GotPlant extends React.Component {
         
         const img = this.extract_img(plant)
 
-        const plant_info_slice = this.state.all_plant_info.slice()
+        const plant_info_copy = this.state.all_plant_info.slice()
 
-        plant_info_slice[plant["id"]]["data"].push({"label":label,"date":date,"img":img})
+        plant_info_copy[plant["id"]]["data"].push({"label":label,"date":date,"img":img})
 
         this.setState({
-          all_plant_info: plant_info_slice
+          all_plant_info: plant_info_copy
         })
 
-        //console.log(plant_info_slice)
+        //console.log(plant_info_copy)
     }  
   } 
 
@@ -274,55 +276,6 @@ load() {
 }
 
 // ----------- State-less React Components ------------- // 
-function Diary(props){
-
-  const plant_list =  props.diaryInfo.plant_on_location.map((plant) => {
-    return <div>
-      <b onClick={()=>{console.log(plant.name)}}> {plant.name} </b>
-      <DataListPlant plantData={plant.data} />
-      <div>
-        <input type="text" id={`label_insert_${plant.id}`} placeholder="What's up"></input>
-        <input type="date" id={`date_insert_${plant.id}`} ></input>
-        <button onClick={props.dateClick(plant)}>Submit a date</button>
-      </div>
-      <div>
-        <input type="file"  id={`img_insert_${plant.id}`} accept="image/*"></input>
-      </div>
-    </div>
-  })
-
-  return (<div style={{
-            position: "absolute",
-            left: `${props.diaryInfo.x}px`,
-            top: `${props.diaryInfo.y}px`,
-            backgroundColor: 'violet'
-          }}>{plant_list}</div>
-  )
-}
-
-
-function DataListPlant(props){
-  return props.plantData.map((data) => {
-    return <div> {data.label} {data.date} 
-      <DiaryImage src = {data.img.src}/>
-    </div>
-  })
-
-}
-
-function DiaryImage(props){
-  if (props.src === "") return (<span/>)
-  
-  return(
-    <img src={props.src} alt="lost in translation" style={{
-            display: "block",
-            height: "150px",
-            width: "150px"
-          }}/> 
-  )
-}
-    
-
 
 // function PlantedList(props){
 //   const plantList = props.plant_list.map((plant) => 
@@ -361,3 +314,4 @@ function ModeDropdown(props){
   const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(<GotPlant user={"Victorio_Natalie"} length={550} width={1200}/>);
   
+
