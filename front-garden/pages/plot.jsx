@@ -224,6 +224,9 @@ const load = () =>{
 return(
       
   <div>
+    <canvas ref={canvas.ref} style={{border:"3px dotted #000000"}}
+    width={width} height={length}
+    onClick={canvas_onclick_switch()} />
     <div >
       <PlantDropdown plant_options={default_plant_list} />
       <div>
@@ -243,9 +246,6 @@ return(
         <div><button onClick={save_plot()}>Save</button></div>
       </div>
     </div>
-  <canvas ref={canvas.ref} style={{border:"3px dotted #000000"}}
-    width={width} height={length}
-    onClick={canvas_onclick_switch()} />
   {/* <PlantedList plant_list={allPlantInfo}/> */}
   <ModeDropdown current_mode={mode} onChange={changed_mode()}/>
   <Diary diaryInfo={diary} dateClick={date_added()} />

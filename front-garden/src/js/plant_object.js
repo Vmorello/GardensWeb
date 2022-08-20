@@ -3,8 +3,6 @@
 import { get_image } from "./plant_image_lookup";
 
 //need to dynamiclly find these offsets
-const x_offset = 9;
-const y_offset = 80;
 
 export class VisiblePlant {
   constructor(ctx, plant_type, x, y) {
@@ -23,8 +21,8 @@ export class VisiblePlant {
     plant_pic.addEventListener("load", () => {
       console.log("trying to draw on canvas");
       console.log(plant_pic);
-      const x_position = this.x - x_offset - plant_pic.naturalHeight / 2;
-      const y_position = this.y - y_offset - plant_pic.naturalWidth / 2;
+      const x_position = this.x - plant_pic.naturalHeight / 2;
+      const y_position = this.y - plant_pic.naturalWidth / 2;
       ctx.drawImage(plant_pic, x_position, y_position);
     });
     plant_pic.src = get_image(this.plant_type);
