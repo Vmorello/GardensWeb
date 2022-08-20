@@ -2,7 +2,10 @@
     "name": "giardino",
     "scripts": {
         "predev": "cd garden_mongo && gunicorn -b 0.0.0.0:9110 app:app --reload --daemon",
-        "dev": "cd front-garden && npm run start",
+        "dev": "cd front-garden && npm run dev",
         "postdev": "echo 'done done'"
+    },
+    "dependencies": {
+        "@nextui-org/react": "^1.0.0-beta.9"
     }
 }

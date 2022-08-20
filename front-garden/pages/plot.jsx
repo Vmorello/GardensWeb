@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
 
-import {CanvasControl} from './js/canvas_utils';
-import {default_plant_list} from './js/plant_image_lookup';
-import {Diary} from './react/diary_components'
+import {CanvasControl} from '../src/js/canvas_utils';
+import {default_plant_list} from '../src/js/plant_image_lookup';
+import {Diary} from '../src/react/diary_components'
 
 const ip_addr = "0.0.0.0:9110" 
 
-function GotPlant(props) {
+export default function GotPlant(props) {
 
   const [mode,setMode] = useState("place");
   const [user,setUser] = useState(props.user);
@@ -271,7 +270,7 @@ function PlantDropdown(props){
           )
       return(
         <div>
-          <label for="plant_dropdown">You Got ~ </label>
+          <label htmlFor="plant_dropdown">You Got ~ </label>
           <select id="plant_selection" name="plant_dropdown">
             {listItems}
           </select>
@@ -293,10 +292,10 @@ function ModeDropdown(props){
   //                   <GotPlant user={"Vito"} length={550} width={1200} />
   //                 </NextUIProvider>, 
   //       document.getElementById("root"));
-  const root = ReactDOM.createRoot(document.getElementById("root"));
-  root.render(
-    <GotPlant user={"Vito"} length={550} width={1200}/>
-  );
+  // const root = ReactDOM.createRoot(document.getElementById("root"));
+  // root.render(
+  //   <GotPlant user={"Vito"} length={550} width={1200}/>
+  // );
   
 
 // fetch(`http://${ip_addr}/v0/health`)
