@@ -3,14 +3,31 @@ import {Radio, Collapse} from "@nextui-org/react"
 
 
 export function FooterDrop(props){
-    return(<Collapse expanded contentLeft={<ModeSelect mode={props.mode} onChange={props.setMode}/>}>
-       
-        <OptionsDrop length={props.length} width={props.width} size_adjustment={props.size_adjustment}
-          clear_button={props.clear_button} user={props.user} changed_user={props.setUser}
-          load={props.load} save={props.save} plant_options={props.plant_options}/>
 
-    </Collapse>
-
+    return(<React.Fragment>
+        <div style={{ backgroundColor: "#F8F8F8",
+                        borderTop: "1px solid #E7E7E7",
+                        textAlign: "center",
+                        padding: "20px",
+                        position: "fixed",
+                        left: "0",
+                        bottom: "0",
+                        width: "100%",}}>
+        <Collapse.Group divider={false}>              
+        <Collapse expanded title={"Show/Hide Options"} contentLeft={
+            <ModeSelect mode={props.mode} onChange={props.setMode} />
+                }>
+                <OptionsDrop length={props.length} width={props.width} size_adjustment={props.size_adjustment}
+                    clear_button={props.clear_button} user={props.user} changed_user={props.setUser}
+                    load={props.load} save={props.save} plant_options={props.plant_options}/>
+        </Collapse></Collapse.Group>      
+    </div>
+    <div style={ {
+        display: 'block',
+        padding: '20px',
+        width: '100%',
+    }} />
+    </React.Fragment>
     )
 }
 
@@ -48,8 +65,11 @@ function OptionsDrop(props){
                 <label >This garden/plot belongs to ~ </label>
                 <input name="owner" value={props.user} 
                     onChange={props.changed_user()}/> 
-                <button onClick={props.load()}>Load</button>
-                <div><button onClick={props.save()}>Save</button></div>
+                
+                <div>
+                    <button onClick={props.load()}>Load</button>
+                    <button onClick={props.save()}>Save</button>
+                </div>
             </div>
         </React.Fragment>
     ) 
