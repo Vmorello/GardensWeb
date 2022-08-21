@@ -8,13 +8,14 @@ export function FooterDrop(props){
         <div style={{ backgroundColor: "#F8F8F8",
                         borderTop: "1px solid #E7E7E7",
                         textAlign: "center",
-                        padding: "20px",
+                        // padding: "20px",
                         position: "fixed",
                         left: "0",
+
                         bottom: "0",
                         width: "100%",}}>
         <Collapse.Group divider={false}>              
-        <Collapse expanded title={"Show/Hide Options"} contentLeft={
+        <Collapse expanded contentLeft={
             <ModeSelect mode={props.mode} onChange={props.setMode} />
                 }>
                 <OptionsDrop length={props.length} width={props.width} size_adjustment={props.size_adjustment}
@@ -26,6 +27,7 @@ export function FooterDrop(props){
         display: 'block',
         padding: '20px',
         width: '100%',
+        height: '110px '
     }} />
     </React.Fragment>
     )
@@ -36,14 +38,14 @@ function ModeSelect(props){
         <Radio.Group label="" orientation="horizontal" 
         value={props.mode} onChange={props.onChange}>
             <Radio value="place" color="success" labelColor="success">
-                Place new items
+                Place Plants
             </Radio>
             <Radio value="select" color="secondary" labelColor="secondary">
-                Select an item
+                Select Plants
             </Radio>
-            <Radio value="set-up" color="warning" labelColor="warning" isDisabled>
+            {/* <Radio value="set-up" color="warning" labelColor="warning" isDisabled>
                 Put Soil
-            </Radio>
+            </Radio> */}
         </Radio.Group>
     )
 }
@@ -53,12 +55,16 @@ function OptionsDrop(props){
     return(<React.Fragment>
         <PlantDropdown plant_options={props.plant_options} />
             <div>
-                <label >Length: </label>
-                <input name="length" value={props.length} type="number" 
-                onChange={props.size_adjustment("length")}/>
-                <label>Width: </label>
-                <input name="width" value={props.width} type="number" 
-                onChange={props.size_adjustment("width")}/>
+                <div>
+                    <label >Length:  </label>
+                    <input name="length" value={props.length} type="number" 
+                        onChange={props.size_adjustment("length")}/>
+                </div>
+                <div>
+                    <label>Width:  </label>
+                    <input name="width" value={props.width} type="number" 
+                        onChange={props.size_adjustment("width")}/>
+                </div>
                 <button onClick={props.clear_button()}>Clear Plot</button>
             </div>
             <div>
