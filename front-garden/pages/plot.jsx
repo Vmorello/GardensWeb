@@ -14,8 +14,8 @@ export default function GotPlant(props) {
   const [mode,setMode] = useState("place");
   const [user,setUser] = useState(props.user);
   const [allPlantInfo,setAllPlantInfo] = useState([]);
-  const [length,setLength] = useState(500);
-  const [width,setWidth] = useState(500);
+  const [length,setLength] = useState(400);
+  const [width,setWidth] = useState(300);
   const [diary,setDiary] = useState({
     x: 0,
     y: 0,
