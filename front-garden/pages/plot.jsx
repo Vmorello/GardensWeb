@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
+// import {Radio, Collapse, Grid} from "@nextui-org/react"
+
 import {CanvasControl} from '../src/js/canvas_utils';
 import {default_plant_list} from '../src/js/plant_image_lookup';
 import {Diary} from '../src/react/diary_components'
+import {FooterDrop} from '../src/react/options_components'
 
 const ip_addr = "0.0.0.0:9110" 
 
@@ -11,11 +14,11 @@ export default function GotPlant(props) {
   const [mode,setMode] = useState("place");
   const [user,setUser] = useState(props.user);
   const [allPlantInfo,setAllPlantInfo] = useState([]);
-  const [length,setLength] = useState(props.length);
-  const [width,setWidth] = useState(props.width);
+  const [length,setLength] = useState(500);
+  const [width,setWidth] = useState(500);
   const [diary,setDiary] = useState({
-    x: props.width + 40,
-    y: 200,
+    x: 0,
+    y: 0,
     plant_on_location: [],
   });
   let numberPlants= 0;
@@ -55,24 +58,20 @@ export default function GotPlant(props) {
         set_plants_empty() 
       })
   }
-   
-  const changed_mode = () => {
-    return ((event) => {
-      setMode(event.target.value);
-      console.log(mode)
-    })
-  }
-
-  const changed_user = () => {
-    return ((event) => {
-      setUser(event.target.value);
-    })
-  }
 
   const set_plants_empty = () => {
       canvas.util.clear()
       numberPlants =0 
       setAllPlantInfo([])
+      resetDiary()
+  }
+
+  const resetDiary = () =>{
+    setDiary({
+      x: 0,
+      y: 0,
+      plant_on_location: [],
+    });
   }
 
 
@@ -91,7 +90,6 @@ export default function GotPlant(props) {
             canvas.util.visual_draw(plant_selected, event.pageX, event.pageY)
 
             add_plant_info(plant_selected, event.pageX, event.pageY)
-
         })
   }
 
@@ -167,7 +165,7 @@ export default function GotPlant(props) {
    * @json {"plant_list": this.state.allPlantInfo, "owner":this.state.user,
    *          "width": this.state.width, "length":this.state.length}
    */
-  const save_plot = () =>{
+  const save = () =>{
 
     return ((event) => {
         fetch(`http://${ip_addr}/v0/save_plot`, {
@@ -193,110 +191,56 @@ export default function GotPlant(props) {
     })
 }
 
-/**
- * returns a function for react that loads a db_entry & a sorted list for canvas:
- * @json {"plant_list": this.state.allPlantInfo, "owner":this.state.user,
- *          "width": this.state.width, "length":this.state.length}
- */
-const load = () =>{
-    return ((event) => {
-        set_plants_empty()
-        fetch(`http://${ip_addr}/v0/load?user=${user}`)
-            .then(response => {
-                    return response.json()
-                },
-                error => {
-                    alert("Could not reach DB")
-                })
-            .then(response => {
-                if (response["plants"].length === 0){
-                  alert("Load is empty")
-                }
-                canvas.util.visual_load(response["plants"])
-                setAllPlantInfo(response["plants"])
-                setLength(response["grow_location"]["length"])
-                setWidth(response["grow_location"]["width"])
-            });
-    })
-}
+  /**
+   * returns a function for react that loads a db_entry & a sorted list for canvas:
+   * @json {"plant_list": this.state.allPlantInfo, "owner":this.state.user,
+   *          "width": this.state.width, "length":this.state.length}
+   */
+  const load = () =>{
+      return ((event) => {
+          set_plants_empty()
+          fetch(`http://${ip_addr}/v0/load?user=${user}`)
+              .then(response => {
+                      return response.json()
+                  },
+                  error => {
+                      alert("Could not reach DB")
+                  })
+              .then(response => {
+                  if (response["plants"].length === 0){
+                    alert("Load is empty")
+                  }
+                  canvas.util.visual_load(response["plants"])
+                  setAllPlantInfo(response["plants"])
+                  setLength(response["grow_location"]["length"])
+                  setWidth(response["grow_location"]["width"])
+              });
+      })
+  }
 
 
-return(
-      
-  <div>
-    <canvas ref={canvas.ref} style={{border:"3px dotted #000000"}}
-    width={width} height={length}
-    onClick={canvas_onclick_switch()} />
-    <div >
-      <PlantDropdown plant_options={default_plant_list} />
-      <div>
-        <label >Length: </label>
-        <input name="length" value={length} type="number" 
-          onChange={size_adjustment("length")}/>
-        <label>Width: </label>
-        <input name="width" value={width} type="number" 
-          onChange={size_adjustment("width")}/>
-        <button onClick={clear_button()}>Clear Plot</button>
-      </div>
-      <div>
-        <label >This garden/plot belongs to ~ </label>
-        <input name="owner" value={user} 
-            onChange={changed_user()}/> 
-        <button onClick={load()}>Load</button>
-        <div><button onClick={save_plot()}>Save</button></div>
-      </div>
-    </div>
-  {/* <PlantedList plant_list={allPlantInfo}/> */}
-  <ModeDropdown current_mode={mode} onChange={changed_mode()}/>
-  <Diary diaryInfo={diary} dateClick={date_added()} />
-</div>
+  return(
+        
+    <div>
+      <canvas ref={canvas.ref} style={{border:"3px dotted #000000"}}
+        width={width} height={length}
+        onClick={canvas_onclick_switch()} />
+      <FooterDrop mode={mode} setMode={setMode} length={length} width={width} size_adjustment={size_adjustment}
+        clear_button={clear_button} user={user} setUser={setUser}
+        load={load} save={save} plant_options={default_plant_list}
+      />
+        
 
-)
+    {/* <PlantedList plant_list={allPlantInfo}/> */}
+    
+    <Diary diaryInfo={diary} dateClick={date_added()} />
+  </div>
+
+  )
 
 }
 
-// ----------- State-less React Components ------------- // 
 
-// function PlantedList(props){
-//   const plantList = props.plant_list.map((plant) => 
-//       <div> You got {plant.amount} {plant.name} planted in the garden </div>
-//     )
-//   return <div>{plantList}</div>
-// }
-
-function PlantDropdown(props){  
-      const listItems = props.plant_options.map((plant) => 
-            <option value={plant.name}>{plant.name}</option>
-          )
-      return(
-        <div>
-          <label htmlFor="plant_dropdown">You Got ~ </label>
-          <select id="plant_selection" name="plant_dropdown">
-            {listItems}
-          </select>
-        </div>
-      )
-}
-
-function ModeDropdown(props){
-    return(
-        <select id="mode_select" value={props.current_mode} onChange={props.onChange}>
-            <option value="place">Place new items</option>
-            <option value="select">Select an item</option>
-          </select>
-    )
-}
-
-// ========================================
-  // ReactDOM.render(<NextUIProvider>
-  //                   <GotPlant user={"Vito"} length={550} width={1200} />
-  //                 </NextUIProvider>, 
-  //       document.getElementById("root"));
-  // const root = ReactDOM.createRoot(document.getElementById("root"));
-  // root.render(
-  //   <GotPlant user={"Vito"} length={550} width={1200}/>
-  // );
-  
 
 // fetch(`http://${ip_addr}/v0/health`)
 //     .then(() => {

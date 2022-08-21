@@ -13,10 +13,6 @@ export class VisiblePlant {
   }
 
   draw_once(ctx) {
-    // const plant_pic = Image({src:});
-    // console.log(`made a simeple react object `);
-    // console.log(plant_pic);
-
     const plant_pic = new Image();
     plant_pic.addEventListener("load", () => {
       console.log("trying to draw on canvas");
