@@ -40,6 +40,12 @@ export default function GotPlant(props) {
     })
   },[]) //notice the empty array here
 
+  useEffect(()=>{
+    if (typeof window !== 'undefined') {
+      setWidth(window.innerWidth-10)
+      setLength(window.innerHeight-100)
+  }},[])
+
   // -------- Event Functions & Util -------------// 
 
   const clear_button = () => {
