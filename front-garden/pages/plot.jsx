@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Head from "next/head";
 
 // import {Radio, Collapse, Grid} from "@nextui-org/react"
 
@@ -174,7 +175,7 @@ export default function GotPlant(props) {
   const save = () =>{
 
     return ((event) => {
-        fetch(`http://${ip_addr}/v0/save_plot`, {
+        fetch(`https://${ip_addr}/v0/save_plot`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json' //needs to match the body 
@@ -205,7 +206,7 @@ export default function GotPlant(props) {
   const load = () =>{
       return ((event) => {
           set_plants_empty()
-          fetch(`http://${ip_addr}/v0/load?user=${user}`)
+          fetch(`https://${ip_addr}/v0/load?user=${user}`)
               .then(response => {
                       return response.json()
                   },
@@ -226,24 +227,26 @@ export default function GotPlant(props) {
 
 
   return(
-        
-    <div>
-      <canvas ref={canvas.ref} style={{border:"3px dotted #000000"}}
-        width={width} height={length}
-        onClick={canvas_onclick_switch()} />
-      <FooterDrop mode={mode} setMode={setMode} length={length} width={width} size_adjustment={size_adjustment}
-        clear_button={clear_button} user={user} setUser={setUser}
-        load={load} save={save} plant_options={default_plant_list}
-      />
-        
+    <>
+      <Head>
+        <title>GotPlant</title>
+      </Head>
+      <div>
+        <canvas ref={canvas.ref} style={{border:"3px dotted #000000"}}
+          width={width} height={length}
+          onClick={canvas_onclick_switch()} />
+        <FooterDrop mode={mode} setMode={setMode} length={length} width={width} size_adjustment={size_adjustment}
+          clear_button={clear_button} user={user} setUser={setUser}
+          load={load} save={save} plant_options={default_plant_list}
+        />
+          
 
-    {/* <PlantedList plant_list={allPlantInfo}/> */}
-    
-    <Diary diaryInfo={diary} dateClick={date_added()} />
-  </div>
-
+      {/* <PlantedList plant_list={allPlantInfo}/> */}
+      
+      <Diary diaryInfo={diary} dateClick={date_added()} />
+    </div>
+  </>
   )
-
 }
 
 

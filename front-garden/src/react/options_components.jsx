@@ -15,7 +15,7 @@ export function FooterDrop(props){
                         bottom: "0",
                         width: "100%",}}>
         <Collapse.Group divider={false}>              
-        <Collapse expanded contentLeft={
+        <Collapse title="Open/Close" expanded contentLeft={
             <ModeSelect mode={props.mode} onChange={props.setMode} />
                 }>
                 <OptionsDrop length={props.length} width={props.width} size_adjustment={props.size_adjustment}
