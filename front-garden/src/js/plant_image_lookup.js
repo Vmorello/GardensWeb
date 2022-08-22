@@ -35,7 +35,7 @@ const dict = {
 
 export const default_plant_list = [
   { name: "cherry_tomato", image: "cherry_tomato" },
-  { name: "generic", image: "generic" },
+  // { name: "generic", image: "generic" },
   { name: "basil", image: "basil" },
   { name: "beans", image: "beans" },
   { name: "beet", image: "beet" },
