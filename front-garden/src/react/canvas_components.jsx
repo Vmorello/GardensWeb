@@ -30,7 +30,7 @@ export function CanvasComp(props){
         raf = requestAnimationFrame(
           canvas.util.startAnimation(visualPlants)
         )
-      }, 40);
+      }, 100);
     }
   })
 
