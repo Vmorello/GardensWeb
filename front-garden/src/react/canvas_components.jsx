@@ -25,12 +25,11 @@ export function CanvasComp(props){
   useEffect(()=>{
     if (props.plantList.length > 0){
       let visualPlants = canvas.util.visual_load(props.plantList, canvas_ref.current);
-      
-      setTimeout(function() {
+      setTimeout(()=> {
         raf = requestAnimationFrame(
           canvas.util.startAnimation(visualPlants)
         )
-      }, 100);
+      }, 60);
     }
   })
 
