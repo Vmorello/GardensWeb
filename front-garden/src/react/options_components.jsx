@@ -1,10 +1,12 @@
 import React from 'react';
-import {Radio, Collapse} from "@nextui-org/react"
+import {Radio, Collapse, Dropdown} from "@nextui-org/react"
+
+import {default_plant_list} from '../js/plant_image_lookup';
 
 
 export function FooterDrop(props){
 
-    return(<React.Fragment>
+    return(<>
         <div style={{ backgroundColor: "#F8F8F8",
                         borderTop: "1px solid #E7E7E7",
                         textAlign: "center",
@@ -15,21 +17,20 @@ export function FooterDrop(props){
                         bottom: "0",
                         width: "100%",}}>
         <Collapse.Group divider={false}>              
-        <Collapse title="Open/Close" expanded contentLeft={
+        <Collapse title="Open/Close" expanded={true} contentLeft={
             <ModeSelect mode={props.mode} onChange={props.setMode} />
                 }>
-                <OptionsDrop length={props.length} width={props.width} size_adjustment={props.size_adjustment}
-                    clear_button={props.clear_button} user={props.user} changed_user={props.setUser}
-                    load={props.load} save={props.save} plant_options={props.plant_options}/>
+                <OptionsDrop {...props} />
         </Collapse></Collapse.Group>      
     </div>
+    {/* phantom footer for rest of UI */}
     <div style={ {
         display: 'block',
         padding: '20px',
         width: '100%',
         height: '110px '
     }} />
-    </React.Fragment>
+    </>
     )
 }
 
@@ -37,63 +38,84 @@ function ModeSelect(props){
     return(
         <Radio.Group label="" orientation="horizontal" 
         value={props.mode} onChange={props.onChange}>
+            <Radio value="setup" color="warning" labelColor="warning">
+                Set-up Plot
+            </Radio>
             <Radio value="place" color="success" labelColor="success">
                 Place Plants
             </Radio>
             <Radio value="select" color="secondary" labelColor="secondary">
                 Select Plants
             </Radio>
-            {/* <Radio value="set-up" color="warning" labelColor="warning" isDisabled>
-                Put Soil
-            </Radio> */}
         </Radio.Group>
     )
 }
 
 function OptionsDrop(props){
 
-    return(<React.Fragment>
-        <PlantDropdown plant_options={props.plant_options} />
-            <div>
-                <div>
-                    <label >Length:  </label>
-                    <input name="length" value={props.length} type="number" 
-                        onChange={props.size_adjustment("length")}/>
-                </div>
-                <div>
-                    <label>Width:  </label>
-                    <input name="width" value={props.width} type="number" 
-                        onChange={props.size_adjustment("width")}/>
-                </div>
-                <button onClick={props.clear_button()}>Clear Plot</button>
-            </div>
-            <div>
-                <label >This garden/plot belongs to ~ </label>
-                <input name="owner" value={props.user} 
-                    onChange={props.changed_user()}/> 
-                
-                <div>
-                    <button onClick={props.load()}>Load</button>
-                    <button onClick={props.save()}>Save</button>
-                </div>
-            </div>
-        </React.Fragment>
+    return(<>
+        <PlantDropdown currentPlant={props.currentPlant} setCurrentPlant={props.setCurrentPlant}  />
+        <SetupOptions {...props}/>
+        </>
     ) 
 }  
 
+function SetupOptions(props){
+    return(
+        <>
+        <div>
+            <div>
+                <label>Length:  </label>
+                <input name="length" value={props.length} type="number" 
+                    onChange={props.size_adjustment("length")}/>
+            </div>
+            <div>
+                <label>Width:  </label>
+                <input name="width" value={props.width} type="number" 
+                    onChange={props.size_adjustment("width")}/>
+            </div>
+            <button onClick={props.clear_button()}>Clear Plot</button>
+        </div>
+        <div>
+            <label >This garden/plot belongs to ~ </label>
+            <input name="owner" value={props.user} 
+                onChange={props.setUser()}/> 
+            
+            <div>
+                <button onClick={props.load()}>Load</button>
+                <button onClick={props.save()}>Save</button>
+            </div>
+        </div>
+        </>
+    )
+} 
 
 
 function PlantDropdown(props){  
-    const listItems = props.plant_options.map((plant) => 
-            <option value={plant.name}>{plant.name}</option>
+    
+    const setCurrentPlantName = (event) => {
+        props.setCurrentPlant(event.values().next().value)
+    }
+
+    const listItems = default_plant_list.map((plant) => 
+            <Dropdown.Item key={plant.image}>{plant.name}</Dropdown.Item>
         )
     return(
-        <div>
-            <label htmlFor="plant_dropdown">You Got ~ </label>
-            <select id="plant_selection" name="plant_dropdown">
-            {listItems}
-            </select>
-        </div>
+        <Dropdown>
+            <Dropdown.Button flat color="success" css={{ tt: "capitalize" }}>
+                {props.currentPlant}
+            </Dropdown.Button>
+            <Dropdown.Menu
+                aria-label="Single selection actions"
+                color="secondary"
+                disallowEmptySelection
+                selectionMode="single"
+                selectedKeys={props.currentPlant}
+                onSelectionChange={setCurrentPlantName}
+            >
+                {listItems}
+            </Dropdown.Menu>
+        </Dropdown>
     )
 }
 

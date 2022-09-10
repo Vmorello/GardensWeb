@@ -14,8 +14,8 @@ class db_interface:
     """builds a connection to the MongoDB cluster with operations to operate GotPlant"""
     def __init__(self) -> None:
         self.client = pymongo.MongoClient(mongo_conn_string)
-        self.db = self.client.sample_garden_db
-        self.collection = self.db.sample_garden_inventory
+        self.db = self.client["sample_garden_db"]
+        self.collection = self.db["sample_garden_inventory"]
         print("starting class & connecting to mongo")
 
     def add_new_garden(self, owner: str):
@@ -36,28 +36,28 @@ class db_interface:
             input: owner
             output: {"db_entry" , "canvas_list"}
         """
-        results = self.collection.find_one(filter= {"owner": owner})
+        results = self.collection.find_one(filter={"owner": owner})
         json_results = parse_to_json(results)
 
         #plant_list = sort_db_for_canvas(json_results)
 
-        return  json_results#, "canvas_list": plant_list
+        return json_results  #, "canvas_list": plant_list
 
     def save_plot(self, owner: str, plant_list: list, length: int, width: int):
         """loads a db_entry of a given user & makes a sorted list for canvas\n
             input: owner, plant_list inserted in canavs, length, width (both of canvas)
         """
-        save_result = self.collection.update_one(filter={"owner": owner}, 
-            update= {
-                "$set": {
-                    "plants": plant_list,
-                    "grow_location": {
-                        "length": length,
-                        "width": width
-                    }
-                }},
-            upsert= True 
-            )
+        save_result = self.collection.update_one(filter={"owner": owner},
+                                                 update={
+                                                     "$set": {
+                                                         "plants": plant_list,
+                                                         "grow_location": {
+                                                             "length": length,
+                                                             "width": width
+                                                         }
+                                                     }
+                                                 },
+                                                 upsert=True)
         pprint(save_result)
         return
 
@@ -68,16 +68,16 @@ class db_interface:
             NEEDS REWORK
         """
         date = datetime.datetime.now()
-        result = self.collection.update_one(filter={"owner": owner}, 
-            update = {
-                "$push": {
-                    "plants": {
-                        "name": plant,
-                        "amount": amount,
-                        "add_date": date
-                    }
-                }
-            })
+        result = self.collection.update_one(filter={"owner": owner},
+                                            update={
+                                                "$push": {
+                                                    "plants": {
+                                                        "name": plant,
+                                                        "amount": amount,
+                                                        "add_date": date
+                                                    }
+                                                }
+                                            })
         return result
 
     def get_list_of_plants(self, owner: str):

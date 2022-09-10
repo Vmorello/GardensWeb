@@ -3,8 +3,7 @@ import Head from "next/head";
 
 // import {Radio, Collapse, Grid} from "@nextui-org/react"
 
-import {CanvasControl} from '../src/js/canvas_utils';
-import {default_plant_list} from '../src/js/plant_image_lookup';
+import {CanvasComp} from '../src/react/canvas_components'
 import {Diary} from '../src/react/diary_components'
 import {FooterDrop} from '../src/react/options_components'
 
@@ -17,29 +16,14 @@ export default function GotPlant(props) {
   const [allPlantInfo,setAllPlantInfo] = useState([]);
   const [length,setLength] = useState(400);
   const [width,setWidth] = useState(300);
+  const [currentPlant, setCurrentPlant] = useState("cherry_tomato");
   const [diary,setDiary] = useState({
     x: 0,
     y: 0,
     plant_on_location: [],
   });
-  let numberPlants= 0;
+  const [numberPlants,setNumberPlants] = useState(0);
 
-  const canvas_ref = React.createRef()
-  const [canvas,setCanvas] = useState({
-    ref: canvas_ref,
-    util: undefined
-  });
-
-
-  // This function happen once the component is mounted the first time
-  useEffect(()=>{
-    const canvas_current = canvas_ref.current
-    const canvas_util = new CanvasControl(canvas_current)
-    setCanvas({
-      ref: canvas_ref,
-      util: canvas_util
-    })
-  },[]) //notice the empty array here
 
   useEffect(()=>{
     if (typeof window !== 'undefined') {
@@ -67,8 +51,8 @@ export default function GotPlant(props) {
   }
 
   const set_plants_empty = () => {
-      canvas.util.clear()
-      numberPlants =0 
+      //canvas.util.clear()
+      setNumberPlants(0)
       setAllPlantInfo([])
       resetDiary()
   }
@@ -92,18 +76,13 @@ export default function GotPlant(props) {
 
   const added_plant = () => {
       return ((event) => {
-            const plant_selected = document.getElementById("plant_selection")
-
-            canvas.util.visual_draw(plant_selected, event.pageX, event.pageY)
-
-            add_plant_info(plant_selected, event.pageX, event.pageY)
+            add_plant_info(currentPlant, event.pageX, event.pageY)
         })
   }
 
   
   const select_plant = () => {
     return ((event) => {
-
       // console.log("selecting plants")
 
       const x = event.pageX
@@ -124,18 +103,17 @@ export default function GotPlant(props) {
 
   const add_plant_info = (plant_selected, x, y) =>{
     const plant_info_copy = allPlantInfo.slice()
-    
 
     plant_info_copy.push({
-        "name": plant_selected.value,
+        "name": plant_selected,
         "x": x,
         "y": y,
         "data": [],
         "id":numberPlants
     })
-
-    //console.log(plant_info_copy)
-    numberPlants++
+    console.log(`just ID'ed plant # ${numberPlants}`)
+    setNumberPlants(numberPlants+1)
+    
     setAllPlantInfo(plant_info_copy)
   }
 
@@ -217,7 +195,6 @@ export default function GotPlant(props) {
                   if (response["plants"].length === 0){
                     alert("Load is empty")
                   }
-                  canvas.util.visual_load(response["plants"])
                   setAllPlantInfo(response["plants"])
                   setLength(response["grow_location"]["length"])
                   setWidth(response["grow_location"]["width"])
@@ -225,24 +202,18 @@ export default function GotPlant(props) {
       })
   }
 
-
   return(
     <>
       <Head>
         <title>GotPlant</title>
       </Head>
       <div>
-        <canvas ref={canvas.ref} style={{border:"3px dotted #000000"}}
-          width={width} height={length}
-          onClick={canvas_onclick_switch()} />
+        <CanvasComp plantList= {allPlantInfo} onClick={canvas_onclick_switch} width={width} length={length}/>
         <FooterDrop mode={mode} setMode={setMode} length={length} width={width} size_adjustment={size_adjustment}
-          clear_button={clear_button} user={user} setUser={setUser}
-          load={load} save={save} plant_options={default_plant_list}
+          clear_button={clear_button} user={user} setUser={setUser}  setCurrentPlant ={setCurrentPlant}
+          currentPlant={currentPlant} load={load} save={save}
         />
-          
-
-      {/* <PlantedList plant_list={allPlantInfo}/> */}
-      
+      {/* <PlantedList plant_list={allPlantInfo}/> */} 
       <Diary diaryInfo={diary} dateClick={date_added()} />
     </div>
   </>

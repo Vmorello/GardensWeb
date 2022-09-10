@@ -14,7 +14,6 @@ import tomato from "/public/images/tomato.png";
 import zucchini from "/public/images/zucchini.png";
 //import dark from '/images/darkness.png';
 
-//TODO put these 2 together
 // convert string input to aboved mapped imported image
 const dict = {
   generic: generic,
@@ -32,6 +31,13 @@ const dict = {
   kale: kale,
   zucchini: zucchini,
 };
+export function get_image(input_value) {
+  //   console.log(`trying to load ${input_value}`);
+  let image = dict[input_value];
+  console.log(image);
+  //   console.log(`trying to load ${image}`);
+  return image.src;
+}
 
 export const default_plant_list = [
   { name: "cherry_tomato", image: "cherry_tomato" },
@@ -42,18 +48,10 @@ export const default_plant_list = [
   { name: "coriander", image: "coriander" },
   { name: "cucumber", image: "cucumber" },
   { name: "garlic", image: "garlic" },
-  { name: "green_onion", green_onion: "generic" },
+  { name: "green_onion", image: "green_onion" },
   { name: "kale", image: "kale" },
   { name: "lettuce", image: "lettuce" },
   { name: "spinach", image: "spinach" },
   { name: "tomato", image: "tomato" },
   { name: "zucchini", image: "zucchini" },
 ];
-
-export function get_image(input_value) {
-  //   console.log(`trying to load ${input_value}`);
-  let image = dict[input_value];
-  console.log(image);
-  //   console.log(`trying to load ${image}`);
-  return image.src;
-}

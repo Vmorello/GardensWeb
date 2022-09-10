@@ -15,7 +15,10 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <Link href="/plot">Got Plant</Link>
+          Welcome to{" "}
+          <Link href="/plot" className={styles.plantcard}>
+            Got Plant &rarr;
+          </Link>
         </h1>
 
         <div className={styles.grid}>
