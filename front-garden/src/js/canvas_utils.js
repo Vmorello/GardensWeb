@@ -14,7 +14,7 @@ export class CanvasControl {
     this.hover = new VisiblePlant(plant, null, null);
     this.hoverVisable = false;
 
-    this.canvas.addEventListener("mousemove", (event) => {
+    this.canvas.addEventListener("pointermove", (event) => {
       this.hoverVisable = true;
       this.hover.move(
         event.pageX - this.hover.plant_pic.naturalHeight / 2,
@@ -22,7 +22,7 @@ export class CanvasControl {
       );
     });
 
-    this.canvas.addEventListener("mouseout", (event) => {
+    this.canvas.addEventListener("pointerout", (event) => {
       this.hoverVisable = false;
     });
   }
