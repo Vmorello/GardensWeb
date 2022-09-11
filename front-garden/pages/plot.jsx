@@ -208,10 +208,12 @@ export default function GotPlant(props) {
         <title>GotPlant</title>
       </Head>
       <div>
-        <CanvasComp plantList= {allPlantInfo} onClick={canvas_onclick_switch} width={width} length={length}/>
-        <FooterDrop mode={mode} setMode={setMode} length={length} width={width} size_adjustment={size_adjustment}
-          clear_button={clear_button} user={user} setUser={setUser}  setCurrentPlant ={setCurrentPlant}
-          currentPlant={currentPlant} load={load} save={save}
+        <CanvasComp plantList= {allPlantInfo} onClick={canvas_onclick_switch} 
+              width={width} length={length} currentPlant={currentPlant}/>
+              
+        <FooterDrop mode={mode} setMode={setMode} length={length} width={width} 
+          size_adjustment={size_adjustment} clear_button={clear_button} user={user} setUser={setUser}  
+          setCurrentPlant ={setCurrentPlant} currentPlant={currentPlant} load={load} save={save}
         />
       {/* <PlantedList plant_list={allPlantInfo}/> */} 
       <Diary diaryInfo={diary} dateClick={date_added()} />

@@ -34,7 +34,7 @@ const dict = {
 export function get_image(input_value) {
   //   console.log(`trying to load ${input_value}`);
   let image = dict[input_value];
-  console.log(image);
+  //console.log(image);
   //   console.log(`trying to load ${image}`);
   return image.src;
 }
