@@ -15,7 +15,7 @@ export function CanvasComp(props){
   // This function happen once the component is mounted the first time
   useEffect(()=>{
     const canvas_current = canvas_ref.current
-    const canvas_util = new CanvasControl(canvas_current, props.currentPlant)
+    const canvas_util = new CanvasControl(canvas_current)
     setCanvas({
       ref: canvas_ref,
       util: canvas_util
@@ -27,8 +27,8 @@ export function CanvasComp(props){
     if (canvas.util === undefined) 
       {return}
     
-    console.log(props.currentPlant)
-    canvas.util.updateHoverPlant(props.currentPlant)
+    canvas.util.setHover(props.currentPlant)
+    //canvas.util.updateHoverPlant(hoverLocation.plant)
     let visualPlants = canvas.util.visual_load(props.plantList);
     setTimeout(()=> {
       canvas.util.animate(visualPlants)()

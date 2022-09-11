@@ -1,19 +1,19 @@
 import { VisiblePlant } from "./plant_object";
 
 export class CanvasControl {
-  constructor(canvas, currentPlant) {
+  constructor(canvas) {
     if (canvas === "not_defined" || canvas === "null") {
       return;
     } else {
       this.canvas = canvas;
       this.ctx = this.canvas.getContext("2d");
-      this.addHover(currentPlant);
     }
   }
 
-  addHover(currentPlant) {
-    this.hover = new VisiblePlant(currentPlant, null, null);
+  setHover(plant) {
+    this.hover = new VisiblePlant(plant, null, null);
     this.hoverVisable = false;
+
     this.canvas.addEventListener("mousemove", (event) => {
       this.hoverVisable = true;
       this.hover.move(
@@ -21,9 +21,9 @@ export class CanvasControl {
         event.pageY - this.hover.plant_pic.naturalWidth / 2
       );
     });
+
     this.canvas.addEventListener("mouseout", (event) => {
       this.hoverVisable = false;
-      this.hover.move(null, null);
     });
   }
 
