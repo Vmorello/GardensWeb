@@ -1,33 +1,42 @@
 export function Diary(props){
-    const plant_list =  props.diaryInfo.plant_on_location.map((plant) => {
-        return <div>
-            <b onClick={()=>{console.log(plant.name)}}> {plant.name} </b>
-            <DataListPlant plantData={plant.data} />
-            <div>
-                <input type="text" id={`label_insert_${plant.id}`} placeholder="What's up"></input>
-                <input type="date" id={`date_insert_${plant.id}`} ></input>
-                <button onClick={props.dateClick(plant)}>Submit a date</button>
-            </div>
-            <div>
-            <input type="file"  id={`img_insert_${plant.id}`} accept="image/*"></input>
-            </div>
-        </div>
-    })
-  
-    return (<div style={{
+
+
+
+  const info_list =  props.diaryInfo.info_on_location.map((item) => {
+    
+
+      return <div id={`journalRep${item.id}`}>
+          <input type="text" value={item.visibleName}
+          onChange={props.titleChange(item)}
+          style={{
+              background: "transparent",
+              border: "none"
+          }}></input>
+          <DataListofItem entries={item.data} repID={item.id}/>
+          <div>
+              <input type="text" id={`label_insert_${item.id}`} placeholder="What's up"></input>
+              <button onClick={props.entered(item)}>Submit Info</button>
+          </div>
+          <div>
+          <input type="file"  id={`img_insert_${item.id}`} accept="image/*"></input>
+          </div>
+      </div>
+  })
+
+  return (<div style={{
               position: "absolute",
               left: `${props.diaryInfo.x}px`,
               top: `${props.diaryInfo.y}px`,
               backgroundColor: 'violet'
-            }}>{plant_list}</div>
+            }}>{info_list}</div>
     )
   }
   
   
-  function DataListPlant(props){
-    return props.plantData.map((data) => {
-      return <div> {data.label} {data.date} 
-        <DiaryImage src = {data.img.src}/>
+  function DataListofItem(props, index){
+    return props.entries.map((entry) => {
+      return <div id={`rep${props.repID}_dataFrag${index}`}> {entry.text} {entry.date} 
+        <DiaryImage src = {entry.img.src}/>
       </div>
     })
   

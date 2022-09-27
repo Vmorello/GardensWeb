@@ -1,130 +1,115 @@
 import React from 'react';
-import {Radio, Collapse, Dropdown} from "@nextui-org/react"
+import {styled, Card, Radio, Dropdown, Button, Input} from "@nextui-org/react"
 
-import {default_plant_list} from '../js/plant_image_lookup';
-
-
-export function FooterDrop(props){
-
-    return(<>
-        <div style={{ backgroundColor: "#F8F8F8",
-                        borderTop: "1px solid #E7E7E7",
-                        textAlign: "center",
-                        // padding: "20px",
-                        position: "fixed",
-                        left: "0",
-
-                        bottom: "0",
-                        width: "100%",}}>
-        <Collapse.Group divider={false}>              
-        <Collapse title="Open/Close" expanded={true} contentLeft={
-            <ModeSelect mode={props.mode} onChange={props.setMode} />
-                }>
-                <OptionsDrop {...props} />
-        </Collapse></Collapse.Group>      
-    </div>
-    {/* phantom footer for rest of UI */}
-    <div style={ {
-        display: 'block',
-        padding: '20px',
-        width: '100%',
-        height: '110px '
-    }} />
-    </>
-    )
-}
-
-function ModeSelect(props){
-    return(
-        <Radio.Group label="" orientation="horizontal" 
-        value={props.mode} onChange={props.onChange}>
-            <Radio value="setup" color="warning" labelColor="warning">
-                Set-up Plot
-            </Radio>
-            <Radio value="place" color="success" labelColor="success">
-                Place Plants
-            </Radio>
-            <Radio value="select" color="secondary" labelColor="secondary">
-                Select Plants
-            </Radio>
-        </Radio.Group>
-    )
-}
-
-function OptionsDrop(props){
-
-    return(<>
-        <PlantDropdown currentPlant={props.currentPlant} setCurrentPlant={props.setCurrentPlant}  />
-        <SetupOptions {...props}/>
-        </>
-    ) 
-}  
-
-function SetupOptions(props){
-    return(
-        <>
-        <div>
-            <div>
-                <label>Length:  </label>
-                <input name="length" value={props.length} type="number" 
-                    onChange={props.size_adjustment("length")}/>
-            </div>
-            <div>
-                <label>Width:  </label>
-                <input name="width" value={props.width} type="number" 
-                    onChange={props.size_adjustment("width")}/>
-            </div>
-            <button onClick={props.clear_button()}>Clear Plot</button>
-        </div>
-        <div>
-            <label >This garden/plot belongs to ~ </label>
-            <input name="owner" value={props.user} 
-                onChange={props.setUser()}/> 
-            
-            <div>
-                <button onClick={props.load()}>Load</button>
-                <button onClick={props.save()}>Save</button>
-            </div>
-        </div>
-        </>
-    )
-} 
+import {get_keys} from '../js/image_lookup';
 
 
-function PlantDropdown(props){  
-    
-    const setCurrentPlantName = (event) => {
-        props.setCurrentPlant(event.values().next().value)
+
+// used as a wrapper for the radio buttons
+const VariantsSelectorWrapper = styled("div", {
+    dflex: "center",
+    position: "fixed",
+    width: "100%",
+    bottom: "10px",
+    "& .nextui-radio-group-items": {
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gridTemplateRows: "1fr",
+        gridColumnGap: "$8",
+        gridRowGap: "$2",
+    }
+})
+
+
+export function CardSelect(props){
+
+    const inputButt = () => {
+
+        const inputFileObject = document.getElementById(`jsonLoadInsert`)
+        const inputFile = inputFileObject.files[0]
+        const jsonURL = URL.createObjectURL(inputFile)
+
+        fetch(jsonURL).then(
+            response => response.json()
+        ).then(
+            json => {
+                const allRepInfo = json.allRepInfo
+                props.setAllRepInfo(json.allRepInfo)
+            }
+        )
     }
 
-    const listItems = default_plant_list.map((plant) => 
-            <Dropdown.Item key={plant.image}>{plant.name}</Dropdown.Item>
+    const exportButt = ()=> {
+        let json = {"allRepInfo":props.allRepInfo}
+        json = JSON.stringify(json)
+        const a = document.createElement("a")
+        a.href = URL.createObjectURL(
+            new Blob([json], {type:"application/json"})
         )
-    return(
+        a.download = "TenTown.json"
+        a.click()
+    }
+
+    return ( <VariantsSelectorWrapper>
+    <Card css={{maxW: "35%"}}>
+            <Card.Body css={{pt: "$8", px: "$8"}}>
+                <Radio.Group
+                    //defaultValue="default"
+                    label="Select variant"
+                    orientation="horizontal"
+                    size="sm"
+                    value={props.mode}
+                    onChange={props.setMode}
+                    >
+                        <Radio value = {"select"}>Journal</Radio>
+                        <Radio value = {"place"}>Place Landmark</Radio>
+                        <Radio value = {"remove"}>Remove</Radio>
+                        
+                </Radio.Group>
+                
+                <IconDropdown setCurrentItem={props.setCurrentItem} 
+                    currentItem={props.currentItem} pageRepList ={props.pageRepList}/>
+            </Card.Body>
+        </Card>
+        <Card css={{maxW: "20%"}}>
+            <Card.Body css={{pt: "$8", px: "$8"}}>
+                <input type={"file"} id={`jsonLoadInsert`} accept={".json"}></input>
+
+                <Button.Group color="primary"  css={{maxW: "20%"}}>
+                    <Button onPress={inputButt}>Import</Button>
+                    <Button onPress={exportButt}>Export</Button>
+                </Button.Group>
+            </Card.Body>
+        </Card>
+    </VariantsSelectorWrapper>
+    )
+}
+
+export function IconDropdown(props){  
+    
+    
+    const setCurrentItem = (event) => {
+        props.setCurrentItem(event.values().next().value)
+    }
+
+    const listItems = props.pageRepList.map(element => {
+        return <Dropdown.Item key= {element}>{element}</Dropdown.Item>
+    });
+    
+    return (
         <Dropdown>
             <Dropdown.Button flat color="success" css={{ tt: "capitalize" }}>
-                {props.currentPlant}
+                {props.currentItem}
             </Dropdown.Button>
             <Dropdown.Menu
                 aria-label="Single selection actions"
-                color="secondary"
                 disallowEmptySelection
                 selectionMode="single"
-                selectedKeys={props.currentPlant}
-                onSelectionChange={setCurrentPlantName}
+                selectedKeys={props.currentItem}
+                onSelectionChange={setCurrentItem}
             >
                 {listItems}
             </Dropdown.Menu>
         </Dropdown>
     )
 }
-
-
-// lagacy that ould give a list of plants based on old db structure 
-// function PlantedList(props){
-//   const plantList = props.plant_list.map((plant) => 
-//       <div> You got {plant.amount} {plant.name} planted in the garden </div>
-//     )
-//   return <div>{plantList}</div>
-// }
-

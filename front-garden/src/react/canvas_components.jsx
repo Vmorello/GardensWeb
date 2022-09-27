@@ -16,6 +16,7 @@ export function CanvasComp(props){
   useEffect(()=>{
     const canvas_current = canvas_ref.current
     const canvas_util = new CanvasControl(canvas_current)
+
     setCanvas({
       ref: canvas_ref,
       util: canvas_util
@@ -25,20 +26,26 @@ export function CanvasComp(props){
   // This function happen every time the component is updated
   useEffect(()=>{
     if (canvas.util === undefined) 
-      {return}
-    
-    canvas.util.setHover(props.currentPlant)
-    //canvas.util.updateHoverPlant(hoverLocation.plant)
-    let visualPlants = canvas.util.visual_load(props.plantList);
+      {return} // Makes this safe to do canvas-util operations
+
+
+    canvas.util.setBackground(props.background)
+
+    if (props.mode === "place" ) {
+      canvas.util.setHover(props.currentItem)}
+    else {
+      canvas.util.removeHover()
+    }
+    let visualRep = canvas.util.visual_load(props.itemList);
     setTimeout(()=> {
-      canvas.util.animate(visualPlants)()
+      canvas.util.animate(visualRep)()
     }, refreshRate);
   
   })
 
   return(
-      <canvas ref={canvas.ref} style={{border:"3px dotted #000000"}}
+      <canvas ref={canvas.ref} onClick={props.onClick()} 
           width={props.width} height={props.length}
-          onClick={props.onClick()} />
+          style={{border:"3px dotted #000000"}}/>
   )
 }

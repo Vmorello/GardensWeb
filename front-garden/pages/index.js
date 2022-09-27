@@ -22,10 +22,9 @@ export default function Home() {
         </h1>
 
         <div className={styles.grid}>
-          <a href="https://discord.gg/BMSMW499" className={styles.card}>
-            <h2>Discord &rarr;</h2>
-            <p>Join us on discord to discuss!</p>
-          </a>
+          <Link href="tentowns" className={styles.card}>
+            <h2> Came for Ten Towns </h2>
+          </Link>
           <Link href="/info/about" className={styles.card}>
             <h2>About us &rarr;</h2>
             <p>Learn about our product, currently empty</p>

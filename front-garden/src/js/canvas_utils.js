@@ -1,4 +1,4 @@
-import { VisiblePlant } from "./plant_object";
+import { VisibleItem } from "./visibleRep";
 
 export class CanvasControl {
   constructor(canvas) {
@@ -10,52 +10,73 @@ export class CanvasControl {
     }
   }
 
-  setHover(plant) {
-    this.hover = new VisiblePlant(plant, null, null);
+  clear() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  setPaintBackground(background) {
+    return () => background.draw(this.ctx);
+  }
+
+  setBackground(background) {
+    if (background === undefined) {
+      this.paintBackground = this.clear;
+    } else {
+      this.paintBackground = this.setPaintBackground(
+        new VisibleItem(background, 0, 0, false)
+      );
+    }
+  }
+
+  setHover(currentIcon) {
+    this.hover = new VisibleItem(currentIcon, null, null);
     this.hoverVisable = false;
 
-    this.canvas.addEventListener("pointermove", (event) => {
-      this.hoverVisable = true;
-      this.hover.move(
-        event.pageX - this.hover.plant_pic.naturalHeight / 2,
-        event.pageY - this.hover.plant_pic.naturalWidth / 2
-      );
-    });
+    this.hoverOnPointerMove = (event) => {
+      if (!(this.hover === null)) {
+        this.hover.move(
+          event.pageX - this.hover.pic.naturalHeight / 2,
+          event.pageY - this.hover.pic.naturalWidth / 2
+        );
+        this.hoverVisable = true;
+      }
+    };
+    this.canvas.addEventListener("pointermove", this.hoverOnPointerMove, true);
 
     this.canvas.addEventListener("pointerout", (event) => {
       this.hoverVisable = false;
     });
   }
 
-  updateHoverPlant(currentPlant) {
-    this.hover.changePlant(currentPlant);
+  updateHover(currentIcon) {
+    this.hover.changeType(currentIcon);
   }
 
-  visual_load(plant_list) {
-    let plant;
-    let visualPlants = [];
-    for (let i = 0; i < plant_list.length; i++) {
-      plant = plant_list[i];
-      //console.log(plant);
-      visualPlants.push(
-        new VisiblePlant(plant["name"], plant["x"], plant["y"])
-      );
+  removeHover() {
+    this.hover = null;
+    this.hoverVisable = false;
+  }
+
+  visual_load(rep_list) {
+    let rep;
+    let visualReps = [];
+    for (let i = 0; i < rep_list.length; i++) {
+      rep = rep_list[i];
+      visualReps.push(new VisibleItem(rep["icon"], rep["x"], rep["y"]));
     }
-    return visualPlants;
+    return visualReps;
   }
 
-  clear() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  }
-
-  animate(visualPlants) {
+  animate(visualReps) {
     return () => {
-      requestAnimationFrame(this.animate(visualPlants));
-      this.clear();
-      for (let i = 0; i < visualPlants.length; i++) {
-        visualPlants[i].draw(this.ctx);
+      requestAnimationFrame(this.animate(visualReps));
+      //this.clear();
+      this.paintBackground();
+      for (let i = 0; i < visualReps.length; i++) {
+        visualReps[i].draw(this.ctx);
       }
       if (this.hoverVisable) {
+        // console.log("drawing hover");
         this.hover.draw(this.ctx);
       }
     };
