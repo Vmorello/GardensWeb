@@ -28,6 +28,8 @@ export function GotPage(props) {
   //     setLength(window.innerHeight-100)
   // }},[])
 
+  
+
   // -------- Event Functions & Util -------------// 
 
   const clear_button = () => {
@@ -49,17 +51,9 @@ export function GotPage(props) {
 
   const set_rep_empty = () => {
       setAllRepInfo([])
+      setidNumeration(0)
       resetDiary()
   }
-
-  const resetDiary = () =>{
-    setDiary({
-      x: 0,
-      y: 0,
-      info_on_location: [],
-    });
-  }
-
 
   const canvasOnclickSwitch = () =>{
     if (mode === "place"){
@@ -91,6 +85,7 @@ export function GotPage(props) {
     setidNumeration(idNumeration+1)
     
     setAllRepInfo(info_copy)
+    //console.log(info_copy)
   }
 
   const removeRepEvent = () => {
@@ -104,10 +99,8 @@ export function GotPage(props) {
 
     const listInfoToRemove = allRepInfo.filter(in_click_range)
 
-
     //TODO 
     listInfoToRemove.forEach(info => {
-      
     });
 
   }
@@ -128,12 +121,20 @@ export function GotPage(props) {
             y:y,
             info_on_location: info_onlocation
           })
-      // console.log(diary)
+      //console.log(diary)
       })  
   }
 
 
   //================ Diary functions ============
+
+  const resetDiary = () =>{
+    setDiary({
+      x: 0,
+      y: 0,
+      info_on_location: [],
+    });
+  }
 
   const infoFragAdded = (item)=> (event)=>{
         
@@ -168,12 +169,15 @@ export function GotPage(props) {
   
   const titleChange = (item)=>((event) => {
     const info_copy = allRepInfo.slice()
-
     info_copy[item.id]["visibleName"] = event.target.value
-    
     setAllRepInfo(info_copy)
   })
   
+  const setModeDReset =(event) => {
+    //console.log(event)
+    if(event!=="select"){resetDiary()}
+    setMode(event)
+  }
 
   return(
     <>
@@ -185,9 +189,10 @@ export function GotPage(props) {
               width={width} length={length} currentItem={currentItem} 
               background={props.background} />
         
-        <CardSelect mode={mode} setMode={setMode} setCurrentItem={setCurrentItem} 
+        <CardSelect mode={mode} setMode={setModeDReset} setCurrentItem={setCurrentItem} 
                     currentItem={currentItem} pageRepList ={props.pageRepList}
-                    allRepInfo={allRepInfo} setAllRepInfo={setAllRepInfo}  />
+                    allRepInfo={allRepInfo} setAllRepInfo={setAllRepInfo} 
+                    setidNumeration={setidNumeration} />
 
       <Diary diaryInfo={diary} entered={infoFragAdded} titleChange={titleChange} />
     </div>

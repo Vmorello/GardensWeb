@@ -1,9 +1,6 @@
 import React from 'react';
 import {styled, Card, Radio, Dropdown, Button, Input} from "@nextui-org/react"
 
-import {get_keys} from '../js/image_lookup';
-
-
 
 // used as a wrapper for the radio buttons
 const VariantsSelectorWrapper = styled("div", {
@@ -34,7 +31,13 @@ export function CardSelect(props){
         ).then(
             json => {
                 const allRepInfo = json.allRepInfo
-                props.setAllRepInfo(json.allRepInfo)
+                props.setAllRepInfo(allRepInfo)
+                //console.log(allRepInfo)
+                const infoSorted = allRepInfo.slice()
+                infoSorted.sort(function(a, b){return b.id - a.id})
+                //console.log(infoSorted)
+                props.setidNumeration(infoSorted[0].id + 1)
+
             }
         )
     }

@@ -23,11 +23,10 @@ export default function Home() {
 
         <div className={styles.grid}>
           <Link href="tentowns" className={styles.card}>
-            <h2> Came for Ten Towns </h2>
+            <h2> Came for Ten Towns &rarr; </h2>
           </Link>
           <Link href="/info/about" className={styles.card}>
             <h2>About us &rarr;</h2>
-            <p>Learn about our product, currently empty</p>
           </Link>
           {/* <a
             href="https://github.com/vercel/next.js/tree/canary/examples"
