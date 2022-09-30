@@ -179,7 +179,7 @@ export function GotPage(props) {
   const titleOnChange = (item)=>((event) => {
     const info_copy = allRepInfo.slice()
     const index = info_copy.findIndex(indexOf => item.id === indexOf.id)
-    info_copy[index]["visibleName"] = event
+    info_copy[index]["visibleName"] = event.target.value
     setAllRepInfo(info_copy)
   })
 
