@@ -9,6 +9,6 @@ export default function SendPage(props)
 
   return (
   <GotPage length={900} width={1280} startIcon={"cherry_tomato"} title={"GotPlant"}
-  background={undefined} pageRepList={plantList} />
+  background={undefined} pageRepList={plantList} clickRadius={35}/>
   )
 }

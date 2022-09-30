@@ -8,6 +8,6 @@ export default function SendPage(props)
 
   return (
   <GotPage length={1420} width={2000} startIcon={"village"} title={"TenTowns"} 
-  background={"tentowns"} pageRepList={iconList}/>
+  background={"tentowns"} pageRepList={iconList} clickRadius={20} />
   )
 }

@@ -1,29 +1,32 @@
+import {Card, Textarea} from "@nextui-org/react"
+
+
+
 export function Diary(props){
-
-
 
   const info_list =  props.diaryInfo.info_on_location.map((item) => {
     
 
       return <div id={`journalRep${item.id}`}>
+
           <input type="text" value={item.visibleName}
-          onChange={props.titleChange(item)}
+          onChange={props.titleOnChange(item)}
           style={{
               background: "transparent",
               border: "none"
           }}></input>
-          <DataListofItem entries={item.data} repID={item.id}/>
+          <DataListofItem entries={item.data} repID={item.id} CatagoryOnChange={props.CatagoryOnChange}/>
           <div>
-              <input type="text" id={`label_insert_${item.id}`} placeholder="What's up"></input>
-              <button onClick={props.entered(item)}>Submit Info</button>
+              {/* <input type="text" id={`labeledTextBox_insert_${item.id}`} placeholder="New Catagory"></input> */}
+              <button onClick={props.entered(item)}>New TextBox</button>
           </div>
-          <div>
+          {/* <div>
           <input type="file"  id={`img_insert_${item.id}`} accept="image/*"></input>
-          </div>
+          </div> */}
       </div>
   })
 
-  return (<div style={{
+  return (<div  style={{
               position: "absolute",
               left: `${props.diaryInfo.x}px`,
               top: `${props.diaryInfo.y}px`,
@@ -33,11 +36,13 @@ export function Diary(props){
   }
   
   
-  function DataListofItem(props, index){
-    return props.entries.map((entry) => {
-      return <div id={`rep${props.repID}_dataFrag${index}`}> {entry.text} {entry.date} 
-        <DiaryImage src = {entry.img.src}/>
+  function DataListofItem(props){
+    return props.entries.map((entry,index) => {
+      return <div>
+        <Textarea underlined id={`rep${props.repID}_dataFrag${index}`} 
+        label={entry.label} value={entry.text} onChange={props.CatagoryOnChange(props.repID,index)} />
       </div>
+      {/* <DiaryImage src = {entry.img.src}/> */}
     })
   
   }

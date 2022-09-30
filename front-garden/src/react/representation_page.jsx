@@ -34,7 +34,7 @@ export function GotPage(props) {
 
   const clear_button = () => {
     return ((event) => {
-        set_rep_empty()
+      emptyRep()
     })
   }
 
@@ -45,19 +45,20 @@ export function GotPage(props) {
         } else if (side === "width"){
           setWidth(event.target.value)
         } 
-        set_rep_empty() 
+        emptyRep() 
       })
   }
 
-  const set_rep_empty = () => {
+  const emptyRep = () => {
       setAllRepInfo([])
       setidNumeration(0)
       resetDiary()
   }
 
+  // can probably be changed with a object for faster access
   const canvasOnclickSwitch = () =>{
     if (mode === "place"){
-        return add_rep()
+        return addRepEvent()
     } else if (mode === "select"){
         return selection()
     } else if (mode === "remove"){
@@ -65,13 +66,13 @@ export function GotPage(props) {
     }
   } 
 
-  const add_rep = () => {
+  const addRepEvent = () => {
       return ((event) => {
-            add_rep_info(currentItem, event.pageX, event.pageY)
+            addRep(currentItem, event.pageX, event.pageY)
         })
   }
   
-  const add_rep_info = (selected, x, y) =>{
+  const addRep = (selected, x, y) =>{
     const info_copy = allRepInfo.slice()
 
     info_copy.push({
@@ -94,15 +95,24 @@ export function GotPage(props) {
       })
 }
   const removeRep = (x,y) => {
-    const in_click_range = (item) => {return item["x"]+ 20 > x && 
-            item["x"]- 20 < x && item["y"]+ 20 > y && item["y"]- 20 < y}
 
-    const listInfoToRemove = allRepInfo.filter(in_click_range)
+    const info_copy = allRepInfo.slice()
 
-    //TODO 
-    listInfoToRemove.forEach(info => {
-    });
+    // see if you combine this with select 
+    const notInRange = (listOut,item)=> {
+      if ( ! (item["x"]+ props.clickRadius > x && 
+        item["x"]- props.clickRadius < x && 
+        item["y"]+ props.clickRadius > y && 
+        item["y"]- props.clickRadius < y)){
+          listOut.push(item)
+        }
+      return listOut
+    }
+    info_copy = info_copy.reduce(notInRange,[])
 
+    //console.log(info_copy)
+
+    setAllRepInfo(info_copy)
   }
 
   const selection = () => {
@@ -112,8 +122,10 @@ export function GotPage(props) {
       const x = event.pageX
       const y = event.pageY
       
-      const in_click_range = (item) => {return item["x"]+ 20 > x && 
-            item["x"]- 20 < x && item["y"]+ 20 > y && item["y"]- 20 < y}
+      const in_click_range = (item) => {return item["x"]+ props.clickRadius > x && 
+              item["x"]- props.clickRadius < x && 
+              item["y"]+ props.clickRadius > y && 
+              item["y"]- props.clickRadius < y}
 
       const info_onlocation = allRepInfo.filter(in_click_range)
       setDiary({
@@ -136,20 +148,17 @@ export function GotPage(props) {
     });
   }
 
-  const infoFragAdded = (item)=> (event)=>{
+  const newTextBoxAdded = (item)=> (event)=>{
         
         console.log("trying to write in the diary")
     
-        const text = document.getElementById(`label_insert_${item.id}`).value 
-        
-        console.log(text)
+        //const label = document.getElementById(`labeledTextBox_insert_${item.id}`).value 
 
-        const img = extract_img(item)
+        //const img = extract_img(item)
 
         const info_copy = allRepInfo.slice()
-
-        //TODO once delete is in this wont work anymore 
-        info_copy[item["id"]]["data"].push({"text":text,"img":img})
+        const index = info_copy.findIndex(indexOf => item.id === indexOf.id)
+        info_copy[index]["data"].push({"text":"Start writing here "})
 
         setAllRepInfo(info_copy)
     }  
@@ -167,11 +176,20 @@ export function GotPage(props) {
   }
 
   
-  const titleChange = (item)=>((event) => {
+  const titleOnChange = (item)=>((event) => {
     const info_copy = allRepInfo.slice()
-    info_copy[item.id]["visibleName"] = event.target.value
+    const index = info_copy.findIndex(indexOf => item.id === indexOf.id)
+    info_copy[index]["visibleName"] = event
     setAllRepInfo(info_copy)
   })
+
+  const CatagoryOnChange = (repID, indexOfPara)=>((event) => {
+    const info_copy = allRepInfo.slice()
+    const index = info_copy.findIndex(indexOf => repID === indexOf.id)
+    info_copy[index]["data"][indexOfPara] = {"text":event.target.value}
+    setAllRepInfo(info_copy)
+  })
+
   
   const setModeDReset =(event) => {
     //console.log(event)
@@ -194,7 +212,8 @@ export function GotPage(props) {
                     allRepInfo={allRepInfo} setAllRepInfo={setAllRepInfo} 
                     setidNumeration={setidNumeration} />
 
-      <Diary diaryInfo={diary} entered={infoFragAdded} titleChange={titleChange} />
+      <Diary diaryInfo={diary} entered={newTextBoxAdded} titleOnChange={titleOnChange}
+        CatagoryOnChange ={CatagoryOnChange} />
     </div>
   </>
   )
