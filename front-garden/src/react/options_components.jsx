@@ -50,7 +50,7 @@ export function CardSelect(props){
             new Blob([json], {type:"application/json"})
         )
         a.download = "TenTown.json"
-        a.press()
+        a.click()
     }
 
 
