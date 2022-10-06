@@ -73,11 +73,11 @@ const dict = {
   zucchini: zucchini,
 };
 
-export function get_keys() {
-  const output = Object.keys(dict);
-  // console.log(output)
-  return output;
-}
+// export function get_keys() {
+//   const output = Object.keys(dict);
+//   // console.log(output)
+//   return output;
+// }
 
 export function get_image(input_value) {
   let image = dict[input_value];

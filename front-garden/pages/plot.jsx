@@ -6,6 +6,7 @@ export default function SendPage(props)
   const plantList = ["basil","beet","coriander","garlic","green_onion","lettuce",
     "spinach","bean","cherry_tomato","tomato","cucumber","kale","zucchini",]
 
+    //Add theme here and that will be different between pages 
 
   return (
   <GotPage length={900} width={1280} startIcon={"cherry_tomato"} title={"GotPlant"}

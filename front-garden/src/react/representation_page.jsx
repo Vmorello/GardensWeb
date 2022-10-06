@@ -55,17 +55,6 @@ export function GotPage(props) {
       resetDiary()
   }
 
-  // can probably be changed with a object for faster access
-  const canvasOnclickSwitch = () =>{
-    if (mode === "place"){
-        return addRepEvent()
-    } else if (mode === "select"){
-        return selection()
-    } else if (mode === "remove"){
-      return removeRepEvent()
-    }
-  } 
-
   const addRepEvent = () => {
       return ((event) => {
             addRep(currentItem, event.pageX, event.pageY)
@@ -74,7 +63,6 @@ export function GotPage(props) {
   
   const addRep = (selected, x, y) =>{
     const info_copy = allRepInfo.slice()
-
     info_copy.push({
         "icon": selected,
         "x": x,
@@ -83,10 +71,9 @@ export function GotPage(props) {
         "id":idNumeration,
         "visibleName" : selected
     })
+
     setidNumeration(idNumeration+1)
-    
     setAllRepInfo(info_copy)
-    //console.log(info_copy)
   }
 
   const removeRepEvent = () => {
@@ -98,7 +85,7 @@ export function GotPage(props) {
 
     const info_copy = allRepInfo.slice()
 
-    // see if you combine this with select 
+    // see if you test this vs select 
     const notInRange = (listOut,item)=> {
       if ( ! (item["x"]+ props.clickRadius > x && 
         item["x"]- props.clickRadius < x && 
@@ -115,28 +102,38 @@ export function GotPage(props) {
     setAllRepInfo(info_copy)
   }
 
-  const selection = () => {
+  const selectionEvent = () => {
     return ((event) => {
+        selection(event.pageX, event.pageY)
+    })
+  }
 
+  const selection = (x,y) => {
+    
       console.log("starting up the journal")
-      const x = event.pageX
-      const y = event.pageY
       
       const in_click_range = (item) => {return item["x"]+ props.clickRadius > x && 
               item["x"]- props.clickRadius < x && 
               item["y"]+ props.clickRadius > y && 
               item["y"]- props.clickRadius < y}
-
       const info_onlocation = allRepInfo.filter(in_click_range)
+
       setDiary({
             x:x, 
             y:y,
             info_on_location: info_onlocation
           })
-      //console.log(diary)
-      })  
   }
 
+  // can probably be changed with a object for faster access
+  const canvasOnclickSwitch = () =>{
+    return modeEvents[mode]()
+  } 
+  const modeEvents = {
+    "place": addRepEvent,
+    "select":selectionEvent,
+    "remove":removeRepEvent
+  }
 
   //================ Diary functions ============
 
@@ -147,49 +144,6 @@ export function GotPage(props) {
       info_on_location: [],
     });
   }
-
-  const newTextBoxAdded = (item)=> (event)=>{
-        
-        console.log("trying to write in the diary")
-    
-        //const label = document.getElementById(`labeledTextBox_insert_${item.id}`).value 
-
-        //const img = extract_img(item)
-
-        const info_copy = allRepInfo.slice()
-        const index = info_copy.findIndex(indexOf => item.id === indexOf.id)
-        info_copy[index]["data"].push({"text":"Start writing here "})
-
-        setAllRepInfo(info_copy)
-    }  
-  
-
-  const extract_img= (item) =>{
-    const img_insert = document.getElementById(`img_insert_${item.id}`)
-    const img_file  = img_insert.files[0]
-
-    if (typeof img_file === 'undefined') return {src:""}
-
-    const img = new Image()
-    img.src = URL.createObjectURL(img_file);
-    return img
-  }
-
-  
-  const titleOnChange = (item)=>((event) => {
-    const info_copy = allRepInfo.slice()
-    const index = info_copy.findIndex(indexOf => item.id === indexOf.id)
-    info_copy[index]["visibleName"] = event.target.value
-    setAllRepInfo(info_copy)
-  })
-
-  const CatagoryOnChange = (repID, indexOfPara)=>((event) => {
-    const info_copy = allRepInfo.slice()
-    const index = info_copy.findIndex(indexOf => repID === indexOf.id)
-    info_copy[index]["data"][indexOfPara] = {"text":event.target.value}
-    setAllRepInfo(info_copy)
-  })
-
   
   const setModeDReset =(event) => {
     //console.log(event)
@@ -203,7 +157,7 @@ export function GotPage(props) {
         <title>{props.title}</title>
       </Head>
       <div>
-        <CanvasComp mode={mode} itemList={allRepInfo} onClick={canvasOnclickSwitch} 
+        <CanvasComp mode={mode} itemList={allRepInfo} onPress={canvasOnclickSwitch} 
               width={width} length={length} currentItem={currentItem} 
               background={props.background} />
         
@@ -212,8 +166,8 @@ export function GotPage(props) {
                     allRepInfo={allRepInfo} setAllRepInfo={setAllRepInfo} 
                     setidNumeration={setidNumeration} />
 
-      <Diary diaryInfo={diary} entered={newTextBoxAdded} titleOnChange={titleOnChange}
-        CatagoryOnChange ={CatagoryOnChange} />
+      <Diary diaryInfo={diary} 
+      allRepInfo={allRepInfo} setAllRepInfo={setAllRepInfo}/>
     </div>
   </>
   )

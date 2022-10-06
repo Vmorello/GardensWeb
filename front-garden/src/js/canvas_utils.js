@@ -7,6 +7,7 @@ export class CanvasControl {
     } else {
       this.canvas = canvas;
       this.ctx = this.canvas.getContext("2d");
+      this.animationFrame = undefined;
     }
   }
 
@@ -67,11 +68,17 @@ export class CanvasControl {
     return visualReps;
   }
 
+  killGhostAnimation() {
+    cancelAnimationFrame(this.animationFrame);
+  }
+
   animate(visualReps) {
+    this.killGhostAnimation();
     return () => {
-      requestAnimationFrame(this.animate(visualReps));
+      this.animationFrame = requestAnimationFrame(this.animate(visualReps));
       //this.clear();
       this.paintBackground();
+      //console.log(visualReps);
       for (let i = 0; i < visualReps.length; i++) {
         visualReps[i].draw(this.ctx);
       }

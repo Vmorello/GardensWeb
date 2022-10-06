@@ -28,7 +28,6 @@ export function CanvasComp(props){
     if (canvas.util === undefined) 
       {return} // Makes this safe to do canvas-util operations
 
-
     canvas.util.setBackground(props.background)
 
     if (props.mode === "place" ) {
@@ -43,8 +42,9 @@ export function CanvasComp(props){
   
   })
 
+
   return(
-      <canvas ref={canvas.ref} onClick={props.onClick()} 
+      <canvas ref={canvas.ref} onClick={props.onPress()} 
           width={props.width} height={props.length}
           style={{border:"3px dotted #000000"}}/>
   )
