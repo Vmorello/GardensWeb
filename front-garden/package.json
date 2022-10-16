@@ -10,7 +10,11 @@
   },
   "dependencies": {
     "@nextui-org/react": "^1.0.0-beta.9",
+    "file-saver": "^2.0.5",
+    "install": "^0.13.0",
+    "jszip": "^3.10.1",
     "next": "12.2.5",
+    "npm": "^8.19.2",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

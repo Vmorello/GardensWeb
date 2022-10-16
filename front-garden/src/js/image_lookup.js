@@ -35,7 +35,13 @@ import kale from "/public/plants/kale.png";
 import tomato from "/public/plants/tomato.png";
 import zucchini from "/public/plants/zucchini.png";
 
+// const inputPhotoFromBlob = () => {
+
+//   return
+// }
+
 const dict = {
+  // custom_map_file:inputPhotoFromBlob,
   tentowns: tentowns,
   //icons
   alter: alter,
@@ -73,13 +79,13 @@ const dict = {
   zucchini: zucchini,
 };
 
-// export function get_keys() {
-//   const output = Object.keys(dict);
-//   // console.log(output)
-//   return output;
-// }
-
 export function get_image(input_value) {
   let image = dict[input_value];
+  // if (image === undefined) {
+  //   console.log("dont have an image for this icon");
+  //   return "";
+  // }
+  // console.log("images from icon:");
+  // console.log(image.src);
   return image.src;
 }

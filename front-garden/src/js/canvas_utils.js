@@ -1,4 +1,4 @@
-import { VisibleItem } from "./visibleRep";
+import { IconVisibleItem, FileVisibleItem } from "./visibleRep";
 
 export class CanvasControl {
   constructor(canvas) {
@@ -7,7 +7,8 @@ export class CanvasControl {
     } else {
       this.canvas = canvas;
       this.ctx = this.canvas.getContext("2d");
-      this.animationFrame = undefined;
+      // this.animationFrame = undefined;
+      // this.paintBackground = undefined;
     }
   }
 
@@ -23,14 +24,21 @@ export class CanvasControl {
     if (background === undefined) {
       this.paintBackground = this.clear;
     } else {
-      this.paintBackground = this.setPaintBackground(
-        new VisibleItem(background, 0, 0, false)
-      );
+      try {
+        this.paintBackground = this.setPaintBackground(
+          new IconVisibleItem(background, 0, 0, false)
+        );
+      } catch (err) {
+        //console.log(err);
+        this.paintBackground = this.setPaintBackground(
+          new FileVisibleItem(background, 0, 0, false)
+        );
+      }
     }
   }
 
   setHover(currentIcon) {
-    this.hover = new VisibleItem(currentIcon, null, null);
+    this.hover = new IconVisibleItem(currentIcon, null, null);
     this.hoverVisable = false;
 
     this.hoverOnPointerMove = (event) => {
@@ -63,7 +71,7 @@ export class CanvasControl {
     let visualReps = [];
     for (let i = 0; i < rep_list.length; i++) {
       rep = rep_list[i];
-      visualReps.push(new VisibleItem(rep["icon"], rep["x"], rep["y"]));
+      visualReps.push(new IconVisibleItem(rep["icon"], rep["x"], rep["y"]));
     }
     return visualReps;
   }

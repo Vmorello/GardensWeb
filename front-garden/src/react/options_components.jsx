@@ -20,57 +20,11 @@ const VariantsSelectorWrapper = styled("div", {
 
 export function CardSelect(props){
 
-    const inputButt = () => {
-
-        const inputFileObject = document.getElementById(`jsonLoadInsert`)
-        const inputFile = inputFileObject.files[0]
-        const jsonURL = URL.createObjectURL(inputFile)
-
-        fetch(jsonURL).then(
-            response => response.json()
-        ).then(
-            json => {
-                const allRepInfo = json.allRepInfo
-                props.setAllRepInfo(allRepInfo)
-                //console.log(allRepInfo)
-                const infoSorted = allRepInfo.slice()
-                infoSorted.sort(function(a, b){return b.id - a.id})
-                //console.log(infoSorted)
-                props.setidNumeration(infoSorted[0].id + 1)
-
-            }
-        )
-    }
-
-    const exportButt = ()=> {
-        let json = {"allRepInfo":props.allRepInfo}
-        json = JSON.stringify(json)
-        const a = document.createElement("a")
-        a.href = URL.createObjectURL(
-            new Blob([json], {type:"application/json"})
-        )
-        a.download = "TenTown.json"
-        a.click()
-    }
-
-
-    const backgroundButt = ()=> {
-        const inputFileObject = document.getElementById(`backgroundLoadInsert`)
-        const inputFile = inputFileObject.files[0]
-        
-        // inputFile.text().then(res => {
-        //     console.log(res)
-        // })
-        
-        const imageURL = URL.createObjectURL(inputFile)
-        console.log(imageURL)
-    }
-
     return ( <VariantsSelectorWrapper>
-        {/* <BackgroundCard backgroundButt={backgroundButt}/> */}
+        <BackgroundCard backgroundButt={props.backgroundButt}/>
         <ModeSelectCard mode={props.mode} setMode={props.setMode} setCurrentItem={props.setCurrentItem} 
             currentItem={props.currentItem} pageRepList ={props.pageRepList}/>
-        <SaveCard inputButt={inputButt} exportButt={exportButt}/>
+        <SaveCard inputButt={props.inputButt} exportButt={props.exportButt}/>
     </VariantsSelectorWrapper>
     )
 }
@@ -111,7 +65,7 @@ function SaveCard(props){
 
     return <Card css={{maxW: "20%"}}>
     <Card.Body css={{pt: "$8", px: "$8"}}>
-        <input type={"file"} id={`jsonLoadInsert`} accept={".json"}></input>
+        <input type={"file"} id={`jsonLoadInsert`} accept={".zip"}></input>
 
         <Button.Group id="saveButtonGroup" color="primary" css={{maxW: "20%"}}>
             <Button onPress={props.inputButt}>Import</Button>
@@ -122,7 +76,6 @@ function SaveCard(props){
 }
 
 function IconDropdown(props){  
-    
     
     const setCurrentItem = (event) => {
         props.setCurrentItem(event.values().next().value)

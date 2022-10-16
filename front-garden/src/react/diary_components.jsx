@@ -7,37 +7,36 @@ export function Diary(props){
   const newTextBoxAdded = (item)=> (event)=>{
     //const img = extract_img(item)
 
-    const info_copy = props.allRepInfo.slice()
+    const info_copy = props.currentRepInfo.slice()
     const index = info_copy.findIndex(indexOf => item.id === indexOf.id)
     info_copy[index]["data"].push({"text":"write here"})
 
-    props.setAllRepInfo(info_copy)
-}  
+    props.setCurrentRepInfo(info_copy)
+  }  
 
-  const extract_img= (item) =>{
-    const img_insert = document.getElementById(`img_insert_${item.id}`)
-    const img_file  = img_insert.files[0]
+  // const newLinkAdded = (item) => (event)=>{
+  //   const info_copy = props.currentRepInfo.slice()
+  //   const index = info_copy.findIndex(indexOf => item.id === indexOf.id)
+  //   info_copy[index]["link"] = {} 
 
-    if (typeof img_file === 'undefined') return {src:""}
-
-    const img = new Image()
-    img.src = URL.createObjectURL(img_file);
-    return img
-  }
+  //   props.setCurrentRepInfo(info_copy)
+  // }
 
   const titleOnChange = (item)=>((event) => {
-    const info_copy = props.allRepInfo.slice()
+    const info_copy = props.currentRepInfo.slice()
     const index = info_copy.findIndex(indexOf => item.id === indexOf.id)
     info_copy[index]["visibleName"] = event.target.value
-    props.setAllRepInfo(info_copy)
+    props.setCurrentRepInfo(info_copy)
   })
 
   const CatagoryOnChange = (repID, indexOfPara)=>((event) => {
-    const info_copy = props.allRepInfo.slice()
+    const info_copy = props.currentRepInfo.slice()
     const index = info_copy.findIndex(indexOf => repID === indexOf.id)
     info_copy[index]["data"][indexOfPara] = {"text":event.target.value}
-    props.setAllRepInfo(info_copy)
+    props.setCurrentRepInfo(info_copy)
   })
+
+
 
   const info_list =  props.diaryInfo.info_on_location.map((item) => {
       return <div key={`journalRep${item.id}`}>
@@ -52,9 +51,8 @@ export function Diary(props){
           <div>
               <Button onPress={newTextBoxAdded(item)} bordered >New Entry</Button>
           </div>
-          {/* <div>
-          <input type="file"  id={`img_insert_${item.id}`} accept="image/*"></input>
-          </div> */}
+          {/* <DairyLink link={item.link}  onAdd={newLinkAdded(item)} /> */}
+
       </div>
   })
 
@@ -67,16 +65,36 @@ export function Diary(props){
     )
   }
   
-  
   function DataListofItem(props){
     return props.entries.map((entry,index) => {
       return <div key={`rep${props.repID}_div${index}`}>
         <Textarea underlined aria-labelledby={`rep${props.repID}_data${index}`}
         value={entry.text} onChange={props.CatagoryOnChange(props.repID,index)} />
       </div>
-      {/* <DiaryImage src = {entry.img.src}/> */}
     })
   
+  }
+
+  function DairyLink(props){
+
+    // console.log(props.link)
+
+    return (<div>
+              <Button onPress={props.onAdd} bordered >Add Link</Button>
+          </div>)
+  }
+
+
+
+  const extract_img= (item) =>{
+    const img_insert = document.getElementById(`img_insert_${item.id}`)
+    const img_file  = img_insert.files[0]
+
+    if (typeof img_file === 'undefined') return {src:""}
+
+    const img = new Image()
+    img.src = URL.createObjectURL(img_file);
+    return img
   }
 
   function DiaryImage(props){
