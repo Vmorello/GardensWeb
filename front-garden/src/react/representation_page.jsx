@@ -171,11 +171,15 @@ export function GotPage(props) {
               setWidth(json.width)
               setLength(json.length)
             })
-          
-          zip.files["map.png"].async("arraybuffer")
+          try {
+            zip.files["map.png"].async("arraybuffer")
             .then((mapArray)=> {
               setBackground(new Blob([mapArray], { type: "image/png" }))
             })
+          } catch (error) {
+            console.log(error)
+          }
+          
         })     
   }
 
