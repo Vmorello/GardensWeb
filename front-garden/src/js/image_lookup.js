@@ -1,3 +1,5 @@
+import Image from "next/future/image";
+
 // maps
 import tentowns from "/public/maps/Icewind_Dale.jpg";
 // icons

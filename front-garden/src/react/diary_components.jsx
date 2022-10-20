@@ -8,8 +8,8 @@ export function Diary(props){
     //const img = extract_img(item)
 
     const info_copy = props.currentRepInfo.slice()
-    const index = info_copy.findIndex(indexOf => item.id === indexOf.id)
-    info_copy[index]["data"].push({"text":"write here"})
+    const listIndex = info_copy.findIndex(indexOf => item.id === indexOf.id)
+    info_copy[listIndex]["data"].push({"text":"write here"})
 
     props.setCurrentRepInfo(info_copy)
   }  
@@ -24,15 +24,15 @@ export function Diary(props){
 
   const titleOnChange = (item)=>((event) => {
     const info_copy = props.currentRepInfo.slice()
-    const index = info_copy.findIndex(indexOf => item.id === indexOf.id)
-    info_copy[index]["visibleName"] = event.target.value
+    const listIndex = info_copy.findIndex(indexOf => item.id === indexOf.id)
+    info_copy[listIndex]["visibleName"] = event.target.value
     props.setCurrentRepInfo(info_copy)
   })
 
   const CatagoryOnChange = (repID, indexOfPara)=>((event) => {
     const info_copy = props.currentRepInfo.slice()
-    const index = info_copy.findIndex(indexOf => repID === indexOf.id)
-    info_copy[index]["data"][indexOfPara] = {"text":event.target.value}
+    const listIndex = info_copy.findIndex(indexOf => repID === indexOf.id)
+    info_copy[listIndex]["data"][indexOfPara] = {"text":event.target.value}
     props.setCurrentRepInfo(info_copy)
   })
 
@@ -51,8 +51,7 @@ export function Diary(props){
           <div>
               <Button onPress={newTextBoxAdded(item)} bordered >New Entry</Button>
           </div>
-          {/* <DairyLink link={item.link}  onAdd={newLinkAdded(item)} /> */}
-
+          <DairyLink link={item.link} goToNestedLink={props.goToNestedLink(item.id, props.currentPageID)} addLink={props.addLink(item.id)} />
       </div>
   })
 
@@ -78,9 +77,13 @@ export function Diary(props){
   function DairyLink(props){
 
     // console.log(props.link)
-
+    if (props.link) {
+      return (<div>
+          <Button onPress={props.goToNestedLink} >Jump In</Button>
+      </div>)
+    }
     return (<div>
-              <Button onPress={props.onAdd} bordered >Add Link</Button>
+              <Button onPress={props.addLink} bordered >Add Link</Button>
           </div>)
   }
 
