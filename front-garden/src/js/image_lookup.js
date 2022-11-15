@@ -1,7 +1,5 @@
 import Image from "next/future/image";
 
-// maps
-import tentowns from "/public/maps/Icewind_Dale.jpg";
 // icons
 import alter from "/public/icons/alter.png";
 import camp from "/public/icons/camp.png";
@@ -43,8 +41,6 @@ import zucchini from "/public/plants/zucchini.png";
 // }
 
 const dict = {
-  // custom_map_file:inputPhotoFromBlob,
-  tentowns: tentowns,
   //icons
   alter: alter,
   camp: camp,

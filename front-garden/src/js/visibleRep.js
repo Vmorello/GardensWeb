@@ -1,6 +1,4 @@
-// import Image from "next/image";
-
-import { get_image } from "./image_lookup";
+// import Image from "next/image"
 
 class VisibleItem {
   constructor(x, y, placedCenter) {
@@ -33,15 +31,29 @@ class VisibleItem {
   }
 }
 
-export class IconVisibleItem extends VisibleItem {
-  constructor(icon, x, y, placedCenter = true) {
+export class SrcImageVisibleItem extends VisibleItem {
+  constructor(image, x, y, placedCenter = true) {
     super(x, y, placedCenter);
-    this.load(icon);
+    this.load(image);
   }
 
-  load(icon) {
+  load(imageSrc) {
     this.startLoad();
-    this.pic.src = get_image(icon);
+    console.log(imageSrc);
+    this.pic.src = imageSrc;
+  }
+}
+
+export class PublicImageVisibleItem extends VisibleItem {
+  constructor(image, x, y, placedCenter = true) {
+    super(x, y, placedCenter);
+    this.load(image);
+  }
+
+  load(image) {
+    this.startLoad();
+    console.log(image);
+    this.pic.src = image.src;
   }
 }
 

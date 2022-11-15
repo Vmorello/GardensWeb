@@ -1,6 +1,7 @@
 import React from 'react';
 import {GotPage} from '../src/react/representation_page'
 
+import tentowns from "../public/maps/Icewind_Dale.jpg";
 export default function SendPage(props)
 {
   const iconList = ["alter", "camp", "cave", "dock","dungeon","forge","fort","graveyard",
@@ -10,6 +11,6 @@ export default function SendPage(props)
 
   return (
   <GotPage length={1420} width={2000} startIcon={"village"} title={"TenTowns"} 
-  background={"tentowns"} pageRepList={iconList} clickRadius={20} />
+  background={tentowns.src} pageRepList={iconList} clickRadius={20} />
   )
 }
