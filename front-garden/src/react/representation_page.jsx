@@ -221,16 +221,16 @@ export function GotPage(props) {
             console.log("iterating over", relativePath);
             //console.log("iterating on", file);
             const path = relativePath.split("/")
+
             console.log("split ", path);
 
-            const loadFunction = getLoadFunction(path[1])
-            
+            const filename = path[1]
+            const saveIndex = path[0]
+
+            const loadFunction = getLoadFunction(filename)
             if (loadFunction===undefined) {return}
 
-            loadFunction(file, newBGsPlusRepInfo, path[0])
-            
-
-            
+            loadFunction(file, newBGsPlusRepInfo, saveIndex)
           })
 
           setTimeout(()=> {

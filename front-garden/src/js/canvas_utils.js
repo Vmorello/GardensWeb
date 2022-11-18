@@ -1,4 +1,4 @@
-import { FileVisibleItem, SrcImageVisibleItem } from "./visibleRep";
+import { getVisibleItemBy, SrcImageVisibleItem } from "./visibleRep";
 
 import { get_image } from "./image_lookup";
 
@@ -28,16 +28,9 @@ export class CanvasControl {
     if (background === undefined) {
       this.paintBackground = this.clear;
     } else {
-      try {
-        this.paintBackground = this.setPaintBackground(
-          new SrcImageVisibleItem(background, 0, 0, false)
-        );
-      } catch (err) {
-        console.log(err);
-        this.paintBackground = this.setPaintBackground(
-          new FileVisibleItem(background, 0, 0, false)
-        );
-      }
+      this.paintBackground = this.setPaintBackground(
+        getVisibleItemBy(["blob/file", "src"], background, 0, 0, false)
+      );
     }
   }
 

@@ -31,9 +31,11 @@ class VisibleItem {
   }
 }
 
+//looking like i should make a manager of sorts
 export class SrcImageVisibleItem extends VisibleItem {
   constructor(image, x, y, placedCenter = true) {
     super(x, y, placedCenter);
+
     this.load(image);
   }
 
@@ -68,3 +70,11 @@ export class FileVisibleItem extends VisibleItem {
     this.pic.src = URL.createObjectURL(file);
   }
 }
+
+export const getVisibleItemBy = (type, data, x, y, placedCenter) => {
+  if (data instanceof Blob) {
+    return new FileVisibleItem(data, x, y, placedCenter);
+  }
+
+  return new SrcImageVisibleItem(data, x, y, placedCenter);
+};
