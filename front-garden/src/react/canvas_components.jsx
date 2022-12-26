@@ -28,18 +28,11 @@ export function CanvasComp(props){
     if (canvas.util === undefined) 
       {return} // Makes this safe to do canvas-util operations
 
-    canvas.util.setBackground(props.background)
-
-    if (props.mode === "place" ) {
-      canvas.util.setHover(props.currentItem)}
-    else {
-      canvas.util.removeHover()
-    }
-    let visualRep = canvas.util.visual_load(props.itemList);
+    canvas.util.setup(props)
+    
     setTimeout(()=> {
-      canvas.util.animate(visualRep)()
+      canvas.util.restartAnimation(props)()
     }, refreshRate);
-  
   })
 
 

@@ -9,13 +9,20 @@ export class CanvasControl {
     } else {
       this.canvas = canvas;
       this.ctx = this.canvas.getContext("2d");
-      // this.animationFrame = undefined;
-      // this.paintBackground = undefined;
+    }
+  }
+
+  setup(props) {
+    this.setBackground(props.background);
+
+    if (props.mode === "place") {
+      this.setHover(props.currentItem);
+    } else {
+      this.removeHover();
     }
   }
 
   clear(clearColor = "#FFFFFF") {
-    //console.log(`trying to clear the background with ${clearColor}`);
     this.ctx.fillStyle = clearColor;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
@@ -75,12 +82,11 @@ export class CanvasControl {
     return visualReps;
   }
 
-  killGhostAnimation() {
+  killPreviousAnimation() {
     cancelAnimationFrame(this.animationFrame);
   }
 
   animate(visualReps) {
-    this.killGhostAnimation();
     return () => {
       this.animationFrame = requestAnimationFrame(this.animate(visualReps));
       //this.clear();
@@ -93,6 +99,15 @@ export class CanvasControl {
         // console.log("drawing hover");
         this.hover.draw(this.ctx);
       }
+    };
+  }
+
+  restartAnimation(props) {
+    this.killPreviousAnimation();
+    let visualReps = this.visual_load(props.itemList);
+    return () => {
+      this.animationFrame = requestAnimationFrame(this.animate(visualReps));
+      this.paintBackground();
     };
   }
 }
