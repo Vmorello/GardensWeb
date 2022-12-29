@@ -1,12 +1,14 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import Head from "next/head";
 
 import {saveAs} from 'file-saver';
 import JSZip from 'jszip';
 
-import {CanvasComp} from './canvas_components'
-import {Diary} from './diary_components'
-import {CardSelect} from './options_components'
+import {CanvasComp} from './canvas_component'
+import {Diary} from './diary_component'
+import {CardSelect} from './options_component'
 
 export function GotPage(props) {
 
@@ -48,7 +50,7 @@ export function GotPage(props) {
 
   const clear_button = () => {
     return ((event) => {
-      emptyRep()
+      resetRep()
     })
   }
 
@@ -59,7 +61,7 @@ export function GotPage(props) {
         } else if (side === "width"){
           setWidth(event.target.value)
         } 
-        emptyRep() 
+        resetRep() 
       })
   }
 
@@ -100,7 +102,7 @@ export function GotPage(props) {
 }
   const removeRep = (x,y) => {
 
-    const info_copy = currentRepInfo.slice()
+    let info_copy = currentRepInfo.slice()
 
     // see if you test this vs select 
     const notInRange = (listOut,item)=> {
@@ -124,16 +126,17 @@ export function GotPage(props) {
   }
 
   const selection = (x,y) => {
-      const info_onlocation = currentRepInfo.filter((item) => 
+      const info_on_location = currentRepInfo.filter((item) => 
         {return item["x"]+ props.clickRadius > x && 
             item["x"]- props.clickRadius < x && 
             item["y"]+ props.clickRadius > y && 
             item["y"]- props.clickRadius < y})
 
+      console.log(`${x} & ${y} ${info_on_location.entries}`)
       setDiary({
             x:x, 
             y:y,
-            info_on_location: info_onlocation
+            info_on_location: info_on_location
           })
   }
 
@@ -344,7 +347,7 @@ export function GotPage(props) {
       </Head>
       <div>
         <CanvasComp mode={mode} itemList={currentRepInfo} onPress={canvasOnclickSwitch} 
-              width={width} length={length} currentItem={currentItem} 
+              width={width} height={length} currentItem={currentItem} 
               background={background} />
         
         <CardSelect mode={mode} setMode={setModeDReset} setCurrentItem={setCurrentItem} 

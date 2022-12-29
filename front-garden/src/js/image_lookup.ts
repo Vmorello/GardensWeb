@@ -1,4 +1,4 @@
-import Image from "next/future/image";
+// import Image from "next/future/image";
 
 // icons
 import alter from "/public/icons/alter.png";
@@ -77,7 +77,7 @@ const dict = {
   zucchini: zucchini,
 };
 
-export function get_image(input_value) {
+export function get_image(input_value:string) {
   let image = dict[input_value];
   // if (image === undefined) {
   //   console.log("dont have an image for this icon");

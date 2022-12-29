@@ -1,5 +1,5 @@
 import React from 'react';
-import {GotPage} from '../src/react/representation_page'
+import {GotPage} from '../../src/react/representation_page'
 
 export default function SendPage(props)
 {

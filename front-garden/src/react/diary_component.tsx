@@ -1,6 +1,3 @@
-import {Card,Button, Textarea} from "@nextui-org/react"
-
-
 
 export function Diary(props){
 
@@ -40,16 +37,16 @@ export function Diary(props){
 
   const info_list =  props.diaryInfo.info_on_location.map((item) => {
       return <div key={`journalRep${item.id}`}>
-          <input type="text" value={item.visibleName}
+          <input value={item.visibleName}
           onChange={titleOnChange(item)}
           id={`journalRepTitle${item.id}`}
           style={{
               background: "transparent",
               border: "none"
-          }}></input>
+          }}/>
           <DataListofItem entries={item.data} repID={item.id} CatagoryOnChange={CatagoryOnChange}/>
           <div>
-              <Button onPress={newTextBoxAdded(item)} bordered >New Entry</Button>
+              <button onClick={newTextBoxAdded(item)} >New Entry</button>
           </div>
           <DairyLink link={item.link} goToNestedLink={props.goToNestedLink(item.id, props.currentPageID)} addLink={props.addLink(item.id)} />
       </div>
@@ -65,10 +62,11 @@ export function Diary(props){
   }
   
   function DataListofItem(props){
+    ////aria-labelledby={`rep${props.repID}_data${index}`} value={entry.text}
     return props.entries.map((entry,index) => {
       return <div key={`rep${props.repID}_div${index}`}>
-        <Textarea underlined aria-labelledby={`rep${props.repID}_data${index}`}
-        value={entry.text} onChange={props.CatagoryOnChange(props.repID,index)} />
+        <textarea cols={35} rows={5} value = {entry.text}
+        onChange={props.CatagoryOnChange(props.repID,index)}/>
       </div>
     })
   
@@ -79,11 +77,11 @@ export function Diary(props){
     // console.log(props.link)
     if (props.link) {
       return (<div>
-          <Button onPress={props.goToNestedLink} >Jump In</Button>
+          <button onClick={props.goToNestedLink} >Jump In</button>
       </div>)
     }
     return (<div>
-              <Button onPress={props.addLink} bordered >Add Link</Button>
+              <button onClick={props.addLink} >Add Link</button>
           </div>)
   }
 
