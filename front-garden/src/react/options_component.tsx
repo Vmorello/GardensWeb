@@ -1,6 +1,10 @@
 import React from 'react';
 
-export function CardSelect(props){
+export function CardSelect(props: {mode:string, setMode:(selected: string) => void, 
+    setCurrentItem:React.Dispatch<React.SetStateAction<string>>, 
+    currentItem:string, pageRepList:string[],
+    inputButt: () => void, exportButt:() => void ,
+    backgroundButt:() => void }){
 
     return ( <div style={{ 
                     position: "fixed",
@@ -13,30 +17,33 @@ export function CardSelect(props){
     )
 }
 
-function BackgroundCard(props){
+function BackgroundCard(props:{backgroundButt:()=>void}){
     return <div>
             <input type={"file"} id={`backgroundLoadInsert`} accept={"image/*"}></input>
             <button onClick={props.backgroundButt}>Change BG</button>
     </div>
 }
 
-function ModeSelectCard(props){
-    return (
-    <div>
-        <select defaultValue={props.mode} onChange={(event)=> props.setMode(event.target.value)}>
-            <option value="select">Journal</option> 
-            <option value="place">Place</option>
-            <option  value="remove" >Remove</option>
-        </select>
-        {props.mode === "place" &&
-            <IconDropdown setCurrentItem={props.setCurrentItem} 
-                currentItem={props.currentItem} pageRepList ={props.pageRepList}/>
-        }
-    </div>
-    )
+function ModeSelectCard(props:{mode:string,setMode:(selected: string) => void,
+        setCurrentItem:React.Dispatch<React.SetStateAction<string>>, 
+        currentItem:string, pageRepList:string[],})
+    {
+        return (
+        <div>
+            <select defaultValue={props.mode} onChange={(event)=> props.setMode(event.target.value)}>
+                <option value="select">Journal</option> 
+                <option value="place">Place</option>
+                <option  value="remove" >Remove</option>
+            </select>
+            {props.mode === "place" &&
+                <IconDropdown setCurrentItem={props.setCurrentItem} 
+                    currentItem={props.currentItem} pageRepList ={props.pageRepList}/>
+            }
+        </div>
+        )
 }
 
-function SaveCard(props){
+function SaveCard(props:{inputButt: () => void, exportButt:() => void ,}){
 
     return <div>
         <input type={"file"} id={`jsonLoadInsert`} accept={".zip"}></input>
@@ -47,18 +54,20 @@ function SaveCard(props){
 </div>
 }
 
-function IconDropdown(props){  
+function IconDropdown(props:{ setCurrentItem:React.Dispatch<React.SetStateAction<string>>, 
+                            currentItem:string, pageRepList:string[],})
+    {  
     
-    const setCurrentItem = (event) => {
-        props.setCurrentItem(event.target.value)
-    }
+    // const setCurrentItem = (event:React.ChangeEvent<HTMLSelectElement>) => {
+    //     props.setCurrentItem(event.target.value)
+    // }
 
-    const listItems = props.pageRepList.map(element => {
+    const listItems = props.pageRepList.map((element:string) => {
         return <option value= {element}>{element}</option>
     });
     
     return (
-        <select onChange={setCurrentItem} defaultValue={props.currentItem}>
+        <select onChange={(event)=> props.setCurrentItem(event.target.value)} defaultValue={props.currentItem}>
             {listItems}
         </select>
     )

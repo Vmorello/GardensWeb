@@ -1,7 +1,7 @@
 import React from 'react';
 import {GotPage} from '../../src/react/representation_page'
 
-export default function SendPage(props)
+export default function SendPage()
 {
   const plantList = ["basil","beet","coriander","garlic","green_onion","lettuce",
     "spinach","bean","cherry_tomato","tomato","cucumber","kale","zucchini",]

@@ -35,55 +35,47 @@ import kale from "/public/plants/kale.png";
 import tomato from "/public/plants/tomato.png";
 import zucchini from "/public/plants/zucchini.png";
 
-// const inputPhotoFromBlob = () => {
+type StaticImageData = { src: string; height: number; width: number; blurDataURL?: string; }
 
-//   return
-// }
-
-const dict = {
+const dict:{ [key: string]: StaticImageData } = {
   //icons
-  alter: alter,
-  camp: camp,
-  cave: cave,
-  dock: dock,
-  dungeon: dungeon,
-  forge: forge,
-  fort: fort,
-  graveyard: graveyard,
-  house: house,
-  mine: mine,
-  ruines: ruines,
-  sheild: sheild,
-  stable: stable,
-  tavern: tavern,
-  temple: temple,
-  town1: town1,
-  town2: town2,
-  village: village,
+  "alter": alter,
+  "camp": camp,
+  "cave": cave,
+  "dock": dock,
+  "dungeon": dungeon,
+  "forge": forge,
+  "fort": fort,
+  "graveyard": graveyard,
+  "house": house,
+  "mine": mine,
+  "ruines": ruines,
+  "sheild": sheild,
+  "stable": stable,
+  "tavern": tavern,
+  "temple": temple,
+  "town1": town1,
+  "town2": town2,
+  "village": village,
   //plants
-  generic: generic,
-  basil: basil,
-  beet: beet,
-  coriander: coriander,
-  garlic: garlic,
-  green_onion: green_onion,
-  lettuce: lettuce,
-  spinach: spinach,
-  bean: bean,
-  cherry_tomato: cherry_tomato,
-  tomato: tomato,
-  cucumber: cucumber,
-  kale: kale,
-  zucchini: zucchini,
+  "generic": generic,
+  "basil": basil,
+  "beet": beet,
+  "coriander": coriander,
+  "garlic": garlic,
+  "green_onion": green_onion,
+  "lettuce": lettuce,
+  "spinach": spinach,
+  "bean": bean,
+  "cherry_tomato": cherry_tomato,
+  "tomato": tomato,
+  "cucumber": cucumber,
+  "kale": kale,
+  "zucchini": zucchini,
 };
 
 export function get_image(input_value:string) {
-  let image = dict[input_value];
-  // if (image === undefined) {
-  //   console.log("dont have an image for this icon");
-  //   return "";
-  // }
-  // console.log("images from icon:");
-  // console.log(image.src);
+  const image = dict[input_value];
+
   return image.src;
 }

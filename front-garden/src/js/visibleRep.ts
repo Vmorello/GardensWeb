@@ -1,7 +1,16 @@
 // import Image from "next/image"
 
-class VisibleItem {
-  constructor(x, y, placedCenter) {
+// interface visibleItemI {
+
+// }
+
+export class VisibleItem {
+  x:number
+  y:number
+  placedCenter:boolean
+  pic?:HTMLImageElement
+
+  constructor(x:number, y:number, placedCenter:boolean) {
     this.x = x;
     this.y = y;
     this.placedCenter = placedCenter;
@@ -11,67 +20,66 @@ class VisibleItem {
     this.pic = new Image();
     this.pic.addEventListener("load", () => {
       if (this.placedCenter === true) {
-        this.x = this.x - this.pic.naturalHeight / 2;
-        this.y = this.y - this.pic.naturalWidth / 2;
+        this.x = this.x - this.pic!.naturalHeight / 2;
+        this.y = this.y - this.pic!.naturalWidth / 2;
       }
     });
   }
 
-  load() {
+  load(input:any) {
     throw "load function not implemented";
   }
 
-  move(x, y) {
+  move(x:number, y:number) {
     this.x = x;
     this.y = y;
   }
 
-  draw(ctx) {
-    ctx.drawImage(this.pic, this.x, this.y);
+  draw(ctx:CanvasRenderingContext2D) {
+    ctx.drawImage(this.pic!, this.x, this.y);
   }
 }
 
-//looking like i should make a manager of sorts
-export class SrcImageVisibleItem extends VisibleItem {
-  constructor(image, x, y, placedCenter = true) {
+class SrcImageVisibleItem extends VisibleItem {
+  constructor(image:string, x:number, y:number, placedCenter = true) {
     super(x, y, placedCenter);
 
     this.load(image);
   }
 
-  load(imageSrc) {
+  load(imageSrc:string) {
     this.startLoad();
-    console.log(imageSrc);
-    this.pic.src = imageSrc;
+    // console.log(imageSrc);
+    this.pic!.src = imageSrc;
   }
 }
 
-export class PublicImageVisibleItem extends VisibleItem {
-  constructor(image, x, y, placedCenter = true) {
-    super(x, y, placedCenter);
-    this.load(image);
-  }
+// export class PublicImageVisibleItem extends VisibleItem {
+//   constructor(image:HTMLImageElement, x:number, y:number, placedCenter = true) {
+//     super(x, y, placedCenter);
+//     this.load(image);
+//   }
 
-  load(image) {
-    this.startLoad();
-    console.log(image);
-    this.pic.src = image.src;
-  }
-}
+//   load(image:HTMLImageElement) {
+//     this.startLoad();
+//     // console.log(image);
+//     this.pic!.src = image.src;
+//   }
+// }
 
-export class FileVisibleItem extends VisibleItem {
-  constructor(file, x, y, placedCenter = true) {
+class FileVisibleItem extends VisibleItem {
+  constructor(file:Blob, x:number, y:number, placedCenter = true) {
     super(x, y, placedCenter);
     this.load(file);
   }
 
-  load(file) {
+  load(file:Blob) {
     this.startLoad();
-    this.pic.src = URL.createObjectURL(file);
+    this.pic!.src = URL.createObjectURL(file);
   }
 }
 
-export const getVisibleItemBy = (type, data, x, y, placedCenter) => {
+export const getVisibleItemBy = (type:string[], data:any, x:number, y:number, placedCenter:boolean=true) => {
   if (data instanceof Blob) {
     return new FileVisibleItem(data, x, y, placedCenter);
   }

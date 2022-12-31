@@ -1,42 +1,40 @@
+import React from "react"
 
-export function Diary(props){
+import {representation} from "./representation_page"
 
-  const newTextBoxAdded = (item)=> (event)=>{
-    //const img = extract_img(item)
+export function Diary(props:{diaryInfo:{x:number,y:number,info_on_location:Array<representation>}, 
+                            addLink:(id:string)=>()=>void, 
+                            goToNestedLink:(childID:string, parentID:string) => () => void ,
+                            currentRepInfo:Array<representation>,
+                            setCurrentRepInfo:React.Dispatch<React.SetStateAction<representation[]>>, 
+                            currentPageID:string})   
+  {
 
+  const newTextBoxAdded = (item:representation)=> ()=>{
     const info_copy = props.currentRepInfo.slice()
     const listIndex = info_copy.findIndex(indexOf => item.id === indexOf.id)
-    info_copy[listIndex]["data"].push({"text":"write here"})
+    info_copy[listIndex]["data"].push("write here")
 
     props.setCurrentRepInfo(info_copy)
   }  
 
-  // const newLinkAdded = (item) => (event)=>{
-  //   const info_copy = props.currentRepInfo.slice()
-  //   const index = info_copy.findIndex(indexOf => item.id === indexOf.id)
-  //   info_copy[index]["link"] = {} 
-
-  //   props.setCurrentRepInfo(info_copy)
-  // }
-
-  const titleOnChange = (item)=>((event) => {
+  const titleOnChange = (item:representation)=>((event:React.ChangeEvent<HTMLInputElement>) => {
     const info_copy = props.currentRepInfo.slice()
     const listIndex = info_copy.findIndex(indexOf => item.id === indexOf.id)
     info_copy[listIndex]["visibleName"] = event.target.value
     props.setCurrentRepInfo(info_copy)
   })
 
-  const CatagoryOnChange = (repID, indexOfPara)=>((event) => {
+  const CatagoryOnChange = (repID:string, indexOfPara:number)=>((event:React.ChangeEvent<HTMLTextAreaElement>) => {
     const info_copy = props.currentRepInfo.slice()
     const listIndex = info_copy.findIndex(indexOf => repID === indexOf.id)
-    info_copy[listIndex]["data"][indexOfPara] = {"text":event.target.value}
+    info_copy[listIndex]["data"][indexOfPara] = event.target.value
     props.setCurrentRepInfo(info_copy)
   })
 
-
-
-  const info_list =  props.diaryInfo.info_on_location.map((item) => {
-      return <div key={`journalRep${item.id}`}>
+  const info_list =  props.diaryInfo.info_on_location.map((item:representation) => {
+      return (
+      <div key={`journalRep${item.id}`}>
           <input value={item.visibleName}
           onChange={titleOnChange(item)}
           id={`journalRepTitle${item.id}`}
@@ -50,6 +48,7 @@ export function Diary(props){
           </div>
           <DairyLink link={item.link} goToNestedLink={props.goToNestedLink(item.id, props.currentPageID)} addLink={props.addLink(item.id)} />
       </div>
+      )
   })
 
   return (<div  style={{
@@ -61,20 +60,22 @@ export function Diary(props){
     )
   }
   
-  function DataListofItem(props){
-    ////aria-labelledby={`rep${props.repID}_data${index}`} value={entry.text}
-    return props.entries.map((entry,index) => {
-      return <div key={`rep${props.repID}_div${index}`}>
-        <textarea cols={35} rows={5} value = {entry.text}
-        onChange={props.CatagoryOnChange(props.repID,index)}/>
-      </div>
-    })
+  function DataListofItem(props:{
+    entries:Array<string>, repID:string, 
+    CatagoryOnChange: (repID:string, indexOfPara:number)=>(event:React.ChangeEvent<HTMLTextAreaElement>) => void
+  }){
+    return <>
+    {props.entries.map((entry,index:number) => {
+        return <div key={`rep${props.repID}_div${index}`}>
+          <textarea cols={35} rows={5} value = {entry}
+          onChange={props.CatagoryOnChange(props.repID,index)}/>
+        </div>
+      })}
+    </>
   
   }
 
-  function DairyLink(props){
-
-    // console.log(props.link)
+  function DairyLink(props:{link:boolean,goToNestedLink:()=>void, addLink:()=>void}) {
     if (props.link) {
       return (<div>
           <button onClick={props.goToNestedLink} >Jump In</button>
@@ -85,27 +86,3 @@ export function Diary(props){
           </div>)
   }
 
-
-
-  const extract_img= (item) =>{
-    const img_insert = document.getElementById(`img_insert_${item.id}`)
-    const img_file  = img_insert.files[0]
-
-    if (typeof img_file === 'undefined') return {src:""}
-
-    const img = new Image()
-    img.src = URL.createObjectURL(img_file);
-    return img
-  }
-
-  function DiaryImage(props){
-    if (props.src === "") return (<span/>)
-    
-    return(
-      <img src={props.src} alt="lost in translation" style={{
-              display: "block",
-              height: "150px",
-              width: "150px"
-            }}/> 
-    )
-  }

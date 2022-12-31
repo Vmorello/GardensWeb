@@ -3,7 +3,7 @@ import {GotPage} from '../../src/react/representation_page'
 
 import map from "../../public/maps/Icewind_Dale.jpg"
 
-export default function SendPage(props)
+export default function SendPage()
 {
   const iconList = ["alter", "camp", "cave", "dock","dungeon","forge","fort","graveyard",
   "house","mine","ruines","sheild","stable","tavern","temple","town1","town2","village"]

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import Head from "next/head";
 
 import {saveAs} from 'file-saver';
@@ -10,18 +10,47 @@ import {CanvasComp} from './canvas_component'
 import {Diary} from './diary_component'
 import {CardSelect} from './options_component'
 
-export function GotPage(props) {
+interface repPage {
+  length: number 
+  width: number 
+  startIcon: string
+  title: string
+  background?: string|Blob
+  pageRepList: Array<string>
+  clickRadius: number
+}
 
-  const [currentRepInfo,setCurrentRepInfo] = useState([]);
+export type representation = {icon: string, 
+  x: number, y: number,
+  data : Array<string>,
+  id :string,
+  visibleName  : string,
+  link: boolean
+}
+
+type fullPageRepresentation = {
+  background?: string|Blob, 
+  repInfo: Array<representation>, 
+  width:number, 
+  length:number,
+  index:string}
+
+type dict_fullPageRepresentation = {[key: string]: fullPageRepresentation}
+
+
+export function GotPage(props:repPage) {
+
+  const [currentRepInfo,setCurrentRepInfo] = useState([] as Array<representation>);
   const [allBGsPlusRepInfo, setAllBGsPlusRepInfo] = useState(
     {index:  
-      { bg: props.background, 
-        repInfo:[], 
+      { background: props.background, 
+        repInfo:[] as Array<representation>, 
         width:props.width, 
         length:props.length,
-        idNumeration:0
+        index:"index"
       }
-    })
+    } as dict_fullPageRepresentation)
+    
   const [currentPageID, setCurrentPageID] = useState("index")
 
   const [mode,setMode] = useState("place");
@@ -32,10 +61,10 @@ export function GotPage(props) {
   const [diary,setDiary] = useState({
     x: 0,
     y: 0,
-    info_on_location: [],
+    info_on_location: [] as Array<representation>,
   });
   const [background,setBackground] = useState(props.background)
-  const [idNumeration,setidNumeration] = useState(0);
+  const [idNumeration,setidNumeration] = useState("0");
 
 
   // useEffect(()=>{
@@ -48,39 +77,39 @@ export function GotPage(props) {
 
   // -------- Event Functions & Util -------------// 
 
-  const clear_button = () => {
-    return ((event) => {
-      resetRep()
-    })
-  }
+  // const clear_button = () => {
+  //   return ((event:Event) => {
+  //     resetRep()
+  //   })
+  // }
 
-  const size_adjustment = (side)=> {
-      return ((event) => {
-        if (side === "length") {
-          setLength(event.target.value)
-        } else if (side === "width"){
-          setWidth(event.target.value)
-        } 
-        resetRep() 
-      })
-  }
+  // const size_adjustment = (side)=> {
+  //     return ((event:ChangeEvent) => {
+  //       if (side === "length") {
+  //         setLength(event.target.value)
+  //       } else if (side === "width"){
+  //         setWidth(event.target.value)
+  //       } 
+  //       resetRep() 
+  //     })
+  // }
 
-  const resetRep = () => {
-      setCurrentRepInfo([])
-      setidNumeration(0)
-      resetDiary()
-  }
+  // const resetRep = () => {
+  //     setCurrentRepInfo([])
+  //     setidNumeration(0)
+  //     resetDiary()
+  // }
 
 
   //================= Main Interaction with canvas with control card ==============
 
   const addRepEvent = () => {
-      return ((event) => {
+      return ((event:{pageX:number,pageY:number}) => {
             addRep(currentItem, event.pageX, event.pageY)
         })
   }
   
-  const addRep = (selected, x, y) =>{
+  const addRep = (selected:string, x:number, y:number) =>{
     const info_copy = currentRepInfo.slice()
     info_copy.push({
         "icon": selected,
@@ -88,24 +117,27 @@ export function GotPage(props) {
         "y": y,
         "data": [],
         "id":idNumeration,
-        "visibleName" : selected
+        "visibleName" : selected,
+        "link":false
     })
 
+
+    // console.log(idNumeration+1)
     setidNumeration(idNumeration+1)
     setCurrentRepInfo(info_copy)
   }
 
   const removeRepEvent = () => {
-    return ((event) => {
+    return ((event:{pageX:number,pageY:number}) => {
         removeRep( event.pageX, event.pageY)
       })
 }
-  const removeRep = (x,y) => {
+  const removeRep = (x:number,y:number) => {
 
     let info_copy = currentRepInfo.slice()
 
     // see if you test this vs select 
-    const notInRange = (listOut,item)=> {
+    const notInRange = (listOut:Array<representation>,item:representation)=> {
       if ( ! (item["x"]+ props.clickRadius > x && 
         item["x"]- props.clickRadius < x && 
         item["y"]+ props.clickRadius > y && 
@@ -120,19 +152,20 @@ export function GotPage(props) {
   }
 
   const selectionEvent = () => {
-    return ((event) => {
+    return ((event:{pageX:number,pageY:number}) => {
+        console.log(event)
         selection(event.pageX, event.pageY)
     })
   }
 
-  const selection = (x,y) => {
+  const selection = (x:number,y:number) => {
       const info_on_location = currentRepInfo.filter((item) => 
         {return item["x"]+ props.clickRadius > x && 
             item["x"]- props.clickRadius < x && 
             item["y"]+ props.clickRadius > y && 
             item["y"]- props.clickRadius < y})
 
-      console.log(`${x} & ${y} ${info_on_location.entries}`)
+      // console.log(`${x} & ${y} ${info_on_location.entries}`)
       setDiary({
             x:x, 
             y:y,
@@ -144,7 +177,7 @@ export function GotPage(props) {
   const canvasOnclickSwitch = () =>{
     return modeEvents[mode]()
   } 
-  const modeEvents = {
+  const modeEvents:{ [key: string]: () => (event: {pageX:number,pageY:number}) =>void }  = {
     "place": addRepEvent,
     "select":selectionEvent,
     "remove":removeRepEvent
@@ -153,19 +186,19 @@ export function GotPage(props) {
   //================ Sub-map tranfers =====================
 
 
-  const goToNestedLink = (childID, parentID) => (event) => {
+  const goToNestedLink = (childID:string, parentID:string) => () => {
 
    // console.log(allBGsPlusRepInfo)
 
     //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
-    allBGsPlusRepInfo[parentID] = {width:width, length:length, bg: background, 
-      repInfo: currentRepInfo, idNumeration: idNumeration,}
+    allBGsPlusRepInfo[parentID] = {width:width, length:length, background: background, 
+      repInfo: currentRepInfo, index: idNumeration,}
     
     setCurrentRepInfo(allBGsPlusRepInfo[childID].repInfo) 
-    setBackground(allBGsPlusRepInfo[childID].bg)
+    setBackground(allBGsPlusRepInfo[childID].background)
     setLength(allBGsPlusRepInfo[childID].length)
     setWidth(allBGsPlusRepInfo[childID].width)
-    setidNumeration(allBGsPlusRepInfo[childID].idNumeration)
+    setidNumeration(allBGsPlusRepInfo[childID].index)
 
     setAllBGsPlusRepInfo(allBGsPlusRepInfo)
     setCurrentPageID(childID)
@@ -175,7 +208,7 @@ export function GotPage(props) {
 
   } 
 
-  const addNestedRep = (id) => (event) => {
+  const addNestedRep = (id:string) => () => {
 
     const info_copy = currentRepInfo.slice()
     const listIndex = info_copy.findIndex(indexOf => id === indexOf.id)
@@ -183,7 +216,7 @@ export function GotPage(props) {
     setCurrentRepInfo(info_copy)
 
     //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
-    allBGsPlusRepInfo[id] = {width:1000, length:920, bg: undefined, idNumeration: 0,
+    allBGsPlusRepInfo[id] = {width:1000, length:920, background: undefined, index: "0",
       repInfo:[{icon:"fort",x:20,y:20,data:[],id:"index",visibleName:"Go Back", link:true}]
     }
     setAllBGsPlusRepInfo(allBGsPlusRepInfo)
@@ -200,32 +233,35 @@ export function GotPage(props) {
     });
   }
   
-  const setModeDReset =(event) => {
+  const setModeDReset =(selected:string) => {
     //console.log(event)
-    if(event!=="select"){resetDiary()}
-    setMode(event)
+    if(selected!=="select"){resetDiary()}
+    setMode(selected)
   }
 
   //==================Card button Actions =======================
 
 
   const importButt = () => {
-    const inputFileObject = document.getElementById("jsonLoadInsert")
+    const inputFileObject = document.getElementById("jsonLoadInsert") as HTMLInputElement;
+    if (inputFileObject.files === null) {
+      return
+    }
     const zipFile = inputFileObject.files[0]
 
     resetDiary()
 
     JSZip.loadAsync(zipFile)
         .then((zip)=>{
-          const newBGsPlusRepInfo = {}
+          const newBGsPlusRepInfo = {} as dict_fullPageRepresentation
           zip.forEach((relativePath, file)=>{
             if (file.dir) {return}
 
-            console.log("iterating over", relativePath);
+            // console.log("iterating over", relativePath);
             //console.log("iterating on", file);
             const path = relativePath.split("/")
 
-            console.log("split ", path);
+            // console.log("split ", path);
 
             const filename = path[1]
             const saveIndex = path[0]
@@ -237,44 +273,46 @@ export function GotPage(props) {
           })
 
           setTimeout(()=> {
-            console.log("newAllInfo" , newBGsPlusRepInfo)
+            // console.log("newAllInfo" , newBGsPlusRepInfo)
             setAllBGsPlusRepInfo(newBGsPlusRepInfo)
 
             setCurrentRepInfo(newBGsPlusRepInfo.index.repInfo) 
             setLength(newBGsPlusRepInfo.index.length)
             setWidth(newBGsPlusRepInfo.index.width)
-            setidNumeration(newBGsPlusRepInfo.index.idNumeration)
+            setidNumeration(newBGsPlusRepInfo.index.index)
 
             setCurrentPageID("index")
             
-            setBackground(newBGsPlusRepInfo.index.bg)
+            setBackground(newBGsPlusRepInfo.index.background)
 
 
           }, 200);
         })     
   }
 
-  const importJsonRep = (jsonFile, newBGsPlusRepInfo, saveIndex)=> {
+  const importJsonRep = (jsonFile:JSZip.JSZipObject, newBGsPlusRepInfo:dict_fullPageRepresentation, saveIndex:string)=> {
     jsonFile.async("string")
       .then((allRepInfoString)=> JSON.parse(allRepInfoString))
-      .then((json)=> {
+      .then((json:fullPageRepresentation)=> {
+        console.log(json)
         newBGsPlusRepInfo[saveIndex] = json
     })
   }
 
-  const importMap = (pngFile, newBGsPlusRepInfo, saveIndex)=> {
+  const importMap = (pngFile:JSZip.JSZipObject, newBGsPlusRepInfo:dict_fullPageRepresentation, saveIndex:string)=> {
     try {
       pngFile.async("blob")
-        .then((mapblob) => newBGsPlusRepInfo[saveIndex].bg = mapblob)
+        .then((mapblob:Blob) => newBGsPlusRepInfo[saveIndex].background = mapblob)
     } catch (error) {
       console.log("Catching Error:" + error)
     }
   }
 
-  const getLoadFunction = (fileString) =>{
-    return importFileEvents[fileString]
+  const getLoadFunction = (fileString:string) =>{
+    return importFileEvent[fileString]
   } 
-  const importFileEvents = {
+
+  const importFileEvent:{[fileType:string]:(jsonFile: JSZip.JSZipObject, newBGsPlusRepInfo: dict_fullPageRepresentation, saveIndex: string) => void} = {
     "rep.json": importJsonRep,
     "map.png": importMap,
   }
@@ -282,8 +320,8 @@ export function GotPage(props) {
   const exportButt = ()=> {
 
       //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
-      allBGsPlusRepInfo[currentPageID] = {width:width, length:length, bg: background, 
-        repInfo: currentRepInfo, idNumeration: idNumeration,}
+      allBGsPlusRepInfo[currentPageID] = {width:width, length:length, background: background, 
+        repInfo: currentRepInfo, index: idNumeration,}
       setAllBGsPlusRepInfo(allBGsPlusRepInfo)
 
       let zip = new JSZip();
@@ -293,15 +331,15 @@ export function GotPage(props) {
         const key= key_value[0]
 
         const valueObject = key_value[1]
-        console.log(key_value)
+        // console.log(key_value)
         folder = zip.folder(key)
 
         const valueString = JSON.stringify(valueObject)
-        folder.file("rep.json", valueString)
+        folder!.file("rep.json", valueString)
         
         try{
           //console.log()
-          folder.file("map.png", valueObject.bg)
+          folder!.file("map.png", valueObject.background as Blob)
         }catch (error) {
           console.log("Catching Error:" + error)
         }
@@ -312,9 +350,9 @@ export function GotPage(props) {
 
   }
 
-  const saveZip = (zip) => {
+  const saveZip = (zip:JSZip) => {
     zip.generateAsync({type:"blob"})
-    .then((blob)=> {
+    .then((blob:Blob)=> {
         saveAs(blob, `${props.title}.zip`);
     });
   }
@@ -322,7 +360,11 @@ export function GotPage(props) {
 
 
   const backgroundButt = ()=> {
-      const inputFileObject = document.getElementById(`backgroundLoadInsert`)
+      const inputFileObject = document.getElementById(`backgroundLoadInsert`) as HTMLInputElement;
+      if (inputFileObject.files === null) {
+        return
+      }
+
       const inputFile = inputFileObject.files[0]
       
       setBackground(inputFile)
@@ -346,8 +388,8 @@ export function GotPage(props) {
         <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
       </Head>
       <div>
-        <CanvasComp mode={mode} itemList={currentRepInfo} onPress={canvasOnclickSwitch} 
-              width={width} height={length} currentItem={currentItem} 
+        <CanvasComp repList={currentRepInfo} onPress={canvasOnclickSwitch} 
+              width={width} height={length} currentItem={currentItem} mode={mode}
               background={background} />
         
         <CardSelect mode={mode} setMode={setModeDReset} setCurrentItem={setCurrentItem} 
