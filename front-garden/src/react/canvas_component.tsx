@@ -27,7 +27,7 @@ export function CanvasComp(props:{
   height:number
   offsetX?:number
   offtsetY?:number
-  onPress: (x:number,y:number) => void 
+  onPress: (x:number,y:number,offsetX:number,offsetY:number) => void 
   currentItem:string
   mode:string
   repList:Array<{icon:string,x:number,y:number}>
@@ -79,8 +79,9 @@ export function CanvasComp(props:{
       if (canvas.util === undefined) {return}
 
       console.log("Clicked Canvas")
-      props.onPress(event.pageX+ canvas.util.offset.x, 
-                    event.pageY+canvas.util.offset.y)
+      props.onPress(event.pageX, event.pageY,
+                    canvas.util.offset.x, 
+                    canvas.util.offset.y)
       //action(event)
   }
 

@@ -111,8 +111,10 @@ export function GotPage(props:repPage) {
   //       })
   // }
   
-  const addRep = (x:number, y:number) =>{
-    console.log(`trying to add something to ${x} & ${y}`)
+  const addRep = (x:number, y:number,offsetX:number,offsetY:number) =>{
+    x = x + offsetX
+    y = y + offsetY
+
     const info_copy = currentRepInfo.slice()
     info_copy.push({
         "icon": currentItem,
@@ -136,7 +138,10 @@ export function GotPage(props:repPage) {
   //     })
   // }
 
-  const removeRep = (x:number,y:number) => {
+  const removeRep = (x:number,y:number,offsetX:number,offsetY:number) => {
+
+    x = x + offsetX
+    y = y + offsetY
 
     let info_copy = currentRepInfo.slice()
 
@@ -162,12 +167,17 @@ export function GotPage(props:repPage) {
   //   })
   // }
 
-  const selection = (x:number,y:number) => {
+  const selection = (x:number,y:number,offsetX:number,offsetY:number) => {
+    const selectX=x +offsetX
+    const selectY=y +offsetY
+
+    console.log(event)
+
       const info_on_location = currentRepInfo.filter((item) => 
-        {return item["x"]+ props.clickRadius > x && 
-            item["x"]- props.clickRadius < x && 
-            item["y"]+ props.clickRadius > y && 
-            item["y"]- props.clickRadius < y})
+        {return item["x"]+ props.clickRadius > selectX && 
+            item["x"]- props.clickRadius < selectX && 
+            item["y"]+ props.clickRadius > selectY && 
+            item["y"]- props.clickRadius < selectY})
 
       // console.log(`${x} & ${y} ${info_on_location.entries}`)
       setDiary({
@@ -177,11 +187,11 @@ export function GotPage(props:repPage) {
           })
   }
 
-  const canvasOnclickSwitch = (x:number,y:number) =>{
+  const canvasOnclickSwitch = (x:number,y:number,offsetX:number,offsetY:number) =>{
     //console.log(event)
-    return modeEvents[mode](x, y)
+    return modeEvents[mode](x, y, offsetX, offsetY)
   } 
-  const modeEvents:{ [key: string]: (x:number,y:number) =>void }  = {
+  const modeEvents:{ [key: string]: (x:number,y:number,offsetX:number,offsetY:number) =>void }  = {
     // "place": addRepEvent,
     // "select":selectionEvent,
     // "remove":removeRepEvent
