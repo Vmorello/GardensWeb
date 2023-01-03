@@ -5,32 +5,25 @@ import { getVisibleItemBy, VisibleItem} from "./visibleRep";
 
 
 interface setupInit {
-  background: string|File
+  background?: string|Blob
   mode:string
   currentItem:string
+  onPress:(offset: { x: number; y: number; }) => (event: {pageX:number,pageY:number}) => void 
 }
-
-
-interface startAnimationInit{
-  
-}
-
 
 export class CanvasControl implements CanvasUtilBase {
   canvas:HTMLCanvasElement
   ctx:CanvasRenderingContext2D
   offset:{
-    x: number;
-    y: number;
+    x: number,
+    y: number
   }
   hover:VisibleItem|null
   hoverVisable:boolean
   animationFrame?:number
   hoverOnPointerMove?:(event:MouseEvent)=>void
-  
-
-
   paintBackground?:()=>void
+
 
     constructor(canvas:HTMLCanvasElement, offset = { x: 0, y: 0 }) {
       this.canvas = canvas;
@@ -41,6 +34,7 @@ export class CanvasControl implements CanvasUtilBase {
     }
 
     setup(props:setupInit){
+      console.log("set-up bg & hover")
       this.setBackground(props.background);
 
       if (props.mode === "place") {
@@ -48,9 +42,16 @@ export class CanvasControl implements CanvasUtilBase {
       } else {
         this.removeHover();
       }
+
+      //this.setOnClick(props.onPress)
     }
 
-    setBackground(background:string|File) {
+    setOnClick(action:(offset:{x:number,y:number}) => (event: {pageX:number,pageY:number}) => void ){
+      //console.log("adding event listner to onclick")
+      this.canvas.addEventListener("pointerup",action(this.offset))
+    }
+
+    setBackground(background?:string|Blob) {
       if (background === undefined) {
         this.paintBackground = this.clear;
       } else {
@@ -71,8 +72,8 @@ export class CanvasControl implements CanvasUtilBase {
       this.hoverOnPointerMove = (event:MouseEvent) => {
         if (!(this.hover === null||this.hover === undefined)) {
           this.hover.move(
-            event.pageX - this.hover.pic!.naturalHeight / 2,
-            event.pageY - this.hover.pic!.naturalWidth / 2
+            event.pageX + this.offset.x - this.hover.pic!.naturalHeight / 2,
+            event.pageY + this.offset.y - this.hover.pic!.naturalWidth / 2
           );
           this.hoverVisable = true;
         }
@@ -84,13 +85,17 @@ export class CanvasControl implements CanvasUtilBase {
       });
     }
   
-    // updateHover(currentIcon:string) {
-    //   this.hover.changeType(currentIcon);
-    // }
-  
     removeHover() {
       this.hover = null;
       this.hoverVisable = false;
+    }
+
+    // updateHover(currentIcon:string) {
+    //   this.hover.changeType(currentIcon);
+    // }
+
+    updateOffset(offset:{x:number,y:number}){
+      this.offset = offset
     }
   
     visual_load(rep_list:Array<{icon:string,x:number,y:number}>) {

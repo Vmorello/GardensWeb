@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, UIEventHandler } from 'react';
 
 import {CanvasControl} from '../js/canvas_utils';
 
@@ -9,6 +9,11 @@ export interface CanvasUtilBase {
   ctx:CanvasRenderingContext2D
   setup(props:any): void
   startAnimation(props:any): (()=> void)
+  updateOffset:(offset:{x:number,y:number})=>void
+  offset:{
+    x: number,
+    y: number
+  }
 }
 
 
@@ -22,7 +27,7 @@ export function CanvasComp(props:{
   height:number
   offsetX?:number
   offtsetY?:number
-  onPress: () => (event: {pageX:number,pageY:number}) => void 
+  onPress: (x:number,y:number) => void 
   currentItem:string
   mode:string
   repList:Array<{icon:string,x:number,y:number}>
@@ -47,6 +52,8 @@ export function CanvasComp(props:{
       ref: canvas_ref,
       util: canvas_util
     })
+
+    // canvas_util.setup(props)
   }, [])
 
   // This function happen every time the component is updated
@@ -61,10 +68,27 @@ export function CanvasComp(props:{
     }, refreshRate);
   })
 
+  const onSideScroll = (event: React.MouseEvent<HTMLInputElement>)=>{
+    // if (canvas.util === undefined) {return}
+    if (event.target instanceof Element){
+      canvas.util!.updateOffset({x:event.target.scrollLeft,y:event.target.scrollTop})
+    }
+  } 
+
+  const onCanvasPress = (event:{pageX:number,pageY:number})=>{
+      if (canvas.util === undefined) {return}
+
+      console.log("Clicked Canvas")
+      props.onPress(event.pageX+ canvas.util.offset.x, 
+                    event.pageY+canvas.util.offset.y)
+      //action(event)
+  }
+
 
   return(
-    <div>
-      <canvas ref={canvas_ref} onClick={ props.onPress()} 
+    <div style={{overflowY:"scroll"}} onScroll={onSideScroll}>
+      <canvas ref={canvas_ref} onClick={onCanvasPress} 
+      
           width={props.width} height={props.height}
           style={{border:"3px dotted #000000"}}/>
     </div>

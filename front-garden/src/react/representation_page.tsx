@@ -103,21 +103,24 @@ export function GotPage(props:repPage) {
 
   //================= Main Interaction with canvas with control card ==============
 
-  const addRepEvent = () => {
-      return ((event:{pageX:number,pageY:number}) => {
-            addRep(currentItem, event.pageX, event.pageY)
-        })
-  }
+  // const addRepEvent = (offset:{x:number,y:number}) => {
+  //     return ((event:{pageX:number,pageY:number}) => {
+  //           // console.log(canvas)
+  //           // console.log(event)
+  //           addRep(currentItem, event.pageX+offset.x, event.pageY+offset.y)
+  //       })
+  // }
   
-  const addRep = (selected:string, x:number, y:number) =>{
+  const addRep = (x:number, y:number) =>{
+    console.log(`trying to add something to ${x} & ${y}`)
     const info_copy = currentRepInfo.slice()
     info_copy.push({
-        "icon": selected,
+        "icon": currentItem,
         "x": x,
         "y": y,
         "data": [],
         "id":idNumeration,
-        "visibleName" : selected,
+        "visibleName" : currentItem,
         "link":false
     })
 
@@ -127,11 +130,12 @@ export function GotPage(props:repPage) {
     setCurrentRepInfo(info_copy)
   }
 
-  const removeRepEvent = () => {
-    return ((event:{pageX:number,pageY:number}) => {
-        removeRep( event.pageX, event.pageY)
-      })
-}
+  // const removeRepEvent = (offset:{x:number,y:number}) => {
+  //   return ((event:{pageX:number,pageY:number}) => {
+  //       removeRep(event.pageX+offset.x, event.pageY+offset.y)
+  //     })
+  // }
+
   const removeRep = (x:number,y:number) => {
 
     let info_copy = currentRepInfo.slice()
@@ -151,12 +155,12 @@ export function GotPage(props:repPage) {
     setCurrentRepInfo(info_copy)
   }
 
-  const selectionEvent = () => {
-    return ((event:{pageX:number,pageY:number}) => {
-        console.log(event)
-        selection(event.pageX, event.pageY)
-    })
-  }
+  // const selectionEvent = (offset:{x:number,y:number}={x:0,y:0}) => {
+  //   return ((event:{pageX:number,pageY:number}) => {
+  //       // console.log(event)
+  //       selection(event.pageX+offset.x, event.pageY+offset.y)
+  //   })
+  // }
 
   const selection = (x:number,y:number) => {
       const info_on_location = currentRepInfo.filter((item) => 
@@ -173,14 +177,17 @@ export function GotPage(props:repPage) {
           })
   }
 
-
-  const canvasOnclickSwitch = () =>{
-    return modeEvents[mode]()
+  const canvasOnclickSwitch = (x:number,y:number) =>{
+    //console.log(event)
+    return modeEvents[mode](x, y)
   } 
-  const modeEvents:{ [key: string]: () => (event: {pageX:number,pageY:number}) =>void }  = {
-    "place": addRepEvent,
-    "select":selectionEvent,
-    "remove":removeRepEvent
+  const modeEvents:{ [key: string]: (x:number,y:number) =>void }  = {
+    // "place": addRepEvent,
+    // "select":selectionEvent,
+    // "remove":removeRepEvent
+    "place": addRep,
+    "select":selection,
+    "remove":removeRep
   }
 
   //================ Sub-map tranfers =====================
@@ -204,7 +211,6 @@ export function GotPage(props:repPage) {
     setCurrentPageID(childID)
 
     resetDiary()
-
 
   } 
 
@@ -241,7 +247,6 @@ export function GotPage(props:repPage) {
 
   //==================Card button Actions =======================
 
-
   const importButt = () => {
     const inputFileObject = document.getElementById("jsonLoadInsert") as HTMLInputElement;
     if (inputFileObject.files === null) {
@@ -257,11 +262,8 @@ export function GotPage(props:repPage) {
           zip.forEach((relativePath, file)=>{
             if (file.dir) {return}
 
-            // console.log("iterating over", relativePath);
             //console.log("iterating on", file);
             const path = relativePath.split("/")
-
-            // console.log("split ", path);
 
             const filename = path[1]
             const saveIndex = path[0]
@@ -345,9 +347,7 @@ export function GotPage(props:repPage) {
         }
           
       })
-
       saveZip(zip)
-
   }
 
   const saveZip = (zip:JSZip) => {
@@ -356,8 +356,6 @@ export function GotPage(props:repPage) {
         saveAs(blob, `${props.title}.zip`);
     });
   }
-
-
 
   const backgroundButt = ()=> {
       const inputFileObject = document.getElementById(`backgroundLoadInsert`) as HTMLInputElement;

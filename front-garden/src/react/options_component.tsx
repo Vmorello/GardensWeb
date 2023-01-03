@@ -63,7 +63,7 @@ function IconDropdown(props:{ setCurrentItem:React.Dispatch<React.SetStateAction
     // }
 
     const listItems = props.pageRepList.map((element:string) => {
-        return <option value= {element}>{element}</option>
+        return <option value= {element} key={element}>{element}</option>
     });
     
     return (
