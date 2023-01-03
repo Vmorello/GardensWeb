@@ -171,8 +171,6 @@ export function GotPage(props:repPage) {
     const selectX=x +offsetX
     const selectY=y +offsetY
 
-    console.log(event)
-
       const info_on_location = currentRepInfo.filter((item) => 
         {return item["x"]+ props.clickRadius > selectX && 
             item["x"]- props.clickRadius < selectX && 
