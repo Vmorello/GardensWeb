@@ -6,18 +6,25 @@ export function CardSelect(props: {mode:string, setMode:(selected: string) => vo
     setCurrentItem:React.Dispatch<React.SetStateAction<string>>, 
     currentItem:string, pageRepList:string[],
     inputButt: () => void, exportButt:() => void ,
-    backgroundButt:() => void }){
+    backgroundButt:() => void, demoButt:() => void }
+    ){
 
-    return ( <div  style={{ position: "fixed",
+    return ( <div style={{ position: "fixed",
                         bottom: "10px",
                         backgroundColor: "rgba(156, 153, 153, 0.75)"}}>
-        
+        <DemoCard demo={props.demoButt}/>
         <ModeSelectCard mode={props.mode} setMode={props.setMode} setCurrentItem={props.setCurrentItem} 
             currentItem={props.currentItem} pageRepList ={props.pageRepList}/>
         <BackgroundCard backgroundButt={props.backgroundButt}/>
         <SaveCard inputButt={props.inputButt} exportButt={props.exportButt}/>
     </div>
     )
+}
+
+function DemoCard(props:{demo:()=>void}){
+    return <div>
+        <button onClick={props.demo}>Try a Demo</button>
+    </div>
 }
 
 function BackgroundCard(props:{backgroundButt:()=>void}){

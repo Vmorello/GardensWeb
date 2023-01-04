@@ -18,6 +18,7 @@ interface repPage {
   background?: string|Blob
   pageRepList: Array<string>
   clickRadius: number
+  demoPath:string
 }
 
 export type representation = {icon: string, 
@@ -117,8 +118,6 @@ export function GotPage(props:repPage) {
         "visibleName" : currentItem,
         "link":false
     })
-
-
     // console.log(idNumeration+1)
     setidNumeration(idNumeration+1)
     setCurrentRepInfo(info_copy)
@@ -200,7 +199,6 @@ export function GotPage(props:repPage) {
     setCurrentPageID(childID)
 
     resetDiary()
-
   } 
 
   const addNestedRep = (id:string) => () => {
@@ -237,13 +235,30 @@ export function GotPage(props:repPage) {
   //==================Card button Actions =======================
 
   const importButt = () => {
-    const inputFileObject = document.getElementById("jsonLoadInsert") as HTMLInputElement;
-    if (inputFileObject.files === null) {
-      return
+    let zipFile
+      const inputFileObject = document.getElementById("jsonLoadInsert") as HTMLInputElement;
+      if (inputFileObject.files === null) {
+        return
+      }
+      zipFile = inputFileObject.files[0]
+      buildFromZip(zipFile)
     }
-    const zipFile = inputFileObject.files[0]
+
+
+  const demoButt = () => {
+      console.log(props.demoPath)
+      fetch(props.demoPath)
+        .then((rep:Response)=>{return(rep.blob())})
+        .then((blob:Blob)=> {buildFromZip(blob)})
+      //zipFile = new File(fileName,)
+  }
+    
+
+  const buildFromZip = (zipFile:Blob) =>{
 
     resetDiary()
+
+    console.log(zipFile)
 
     JSZip.loadAsync(zipFile)
         .then((zip)=>{
@@ -382,10 +397,10 @@ export function GotPage(props:repPage) {
         <CardSelect mode={mode} setMode={setModeDReset} setCurrentItem={setCurrentItem} 
                     currentItem={currentItem} pageRepList ={props.pageRepList}
                     inputButt={importButt} exportButt={exportButt} 
-                    backgroundButt={backgroundButt}     />
+                    backgroundButt={backgroundButt}  demoButt={demoButt}  />
 
       <Diary diaryInfo={diary} addLink={addNestedRep} goToNestedLink={goToNestedLink}
-      currentRepInfo={currentRepInfo} setCurrentRepInfo={setCurrentRepInfo} currentPageID={currentPageID}/>
+            currentRepInfo={currentRepInfo} setCurrentRepInfo={setCurrentRepInfo} currentPageID={currentPageID}/>
     </div>
   </>
   )
