@@ -1,14 +1,17 @@
 import React from 'react';
 
+import styles from './component.module.css'
+
 export function CardSelect(props: {mode:string, setMode:(selected: string) => void, 
     setCurrentItem:React.Dispatch<React.SetStateAction<string>>, 
     currentItem:string, pageRepList:string[],
     inputButt: () => void, exportButt:() => void ,
     backgroundButt:() => void }){
 
-    return ( <div style={{ 
-                    position: "fixed",
-                    bottom: "10px",}}>
+    return ( <div  style={{ position: "fixed",
+                        bottom: "10px",
+                        backgroundColor: "rgba(156, 153, 153, 0.75)"}}>
+        
         <ModeSelectCard mode={props.mode} setMode={props.setMode} setCurrentItem={props.setCurrentItem} 
             currentItem={props.currentItem} pageRepList ={props.pageRepList}/>
         <BackgroundCard backgroundButt={props.backgroundButt}/>

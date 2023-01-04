@@ -102,14 +102,6 @@ export function GotPage(props:repPage) {
 
 
   //================= Main Interaction with canvas with control card ==============
-
-  // const addRepEvent = (offset:{x:number,y:number}) => {
-  //     return ((event:{pageX:number,pageY:number}) => {
-  //           // console.log(canvas)
-  //           // console.log(event)
-  //           addRep(currentItem, event.pageX+offset.x, event.pageY+offset.y)
-  //       })
-  // }
   
   const addRep = (x:number, y:number,offsetX:number,offsetY:number) =>{
     x = x + offsetX
@@ -132,11 +124,6 @@ export function GotPage(props:repPage) {
     setCurrentRepInfo(info_copy)
   }
 
-  // const removeRepEvent = (offset:{x:number,y:number}) => {
-  //   return ((event:{pageX:number,pageY:number}) => {
-  //       removeRep(event.pageX+offset.x, event.pageY+offset.y)
-  //     })
-  // }
 
   const removeRep = (x:number,y:number,offsetX:number,offsetY:number) => {
 
@@ -160,12 +147,6 @@ export function GotPage(props:repPage) {
     setCurrentRepInfo(info_copy)
   }
 
-  // const selectionEvent = (offset:{x:number,y:number}={x:0,y:0}) => {
-  //   return ((event:{pageX:number,pageY:number}) => {
-  //       // console.log(event)
-  //       selection(event.pageX+offset.x, event.pageY+offset.y)
-  //   })
-  // }
 
   const selection = (x:number,y:number,offsetX:number,offsetY:number) => {
     const selectX=x +offsetX
@@ -396,7 +377,7 @@ export function GotPage(props:repPage) {
       <div>
         <CanvasComp repList={currentRepInfo} onPress={canvasOnclickSwitch} 
               width={width} height={length} currentItem={currentItem} mode={mode}
-              background={background} />
+              background={background}/>
         
         <CardSelect mode={mode} setMode={setModeDReset} setCurrentItem={setCurrentItem} 
                     currentItem={currentItem} pageRepList ={props.pageRepList}
