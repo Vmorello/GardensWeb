@@ -13,9 +13,12 @@ export function CardSelect(props: {mode:string, setMode:(selected: string) => vo
                         bottom: "10px",
                         backgroundColor: "rgba(156, 153, 153, 0.75)"}}>
         <DemoCard demo={props.demoButt}/>
+        <label>Pick an Action</label>
         <ModeSelectCard mode={props.mode} setMode={props.setMode} setCurrentItem={props.setCurrentItem} 
             currentItem={props.currentItem} pageRepList ={props.pageRepList}/>
+        <label>Changing the Background</label>
         <BackgroundCard backgroundButt={props.backgroundButt}/>
+        <label>Save/load</label>
         <SaveCard inputButt={props.inputButt} exportButt={props.exportButt}/>
     </div>
     )
