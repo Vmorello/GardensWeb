@@ -20,8 +20,9 @@ export class VisibleItem {
     this.pic = new Image();
     this.pic.addEventListener("load", () => {
       if (this.placedCenter === true) {
-        this.x = this.x - this.pic!.naturalHeight / 2;
-        this.y = this.y - this.pic!.naturalWidth / 2;
+        console.log(this.pic!.naturalHeight)
+        this.x = this.x //- this.pic!.naturalHeight / 2;
+        this.y = this.y //- this.pic!.naturalWidth / 2;
       }
     });
   }

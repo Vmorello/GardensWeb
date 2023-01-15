@@ -10,6 +10,6 @@ export default function SendPage()
 
   return (
   <GotPage length={900} width={1280} startIcon={"cherry_tomato"} title={"GotPlant"}
-  background={undefined} pageRepList={plantList} clickRadius={35} demoPath={ "/demo/GotPlant12_31.zip"}/>
+  background={undefined} pageRepList={plantList} clickRadius={128/2} demoPath={ "/demo/GotPlant12_31.zip"}/>
   )
 }

@@ -105,8 +105,8 @@ export function GotPage(props:repPage) {
   //================= Main Interaction with canvas with control card ==============
   
   const addRep = (x:number, y:number,offsetX:number,offsetY:number) =>{
-    x = x + offsetX
-    y = y + offsetY
+    x = x + offsetX 
+    y = y + offsetY 
 
     const info_copy = currentRepInfo.slice()
     info_copy.push({
@@ -167,7 +167,7 @@ export function GotPage(props:repPage) {
 
   const canvasOnclickSwitch = (x:number,y:number,offsetX:number,offsetY:number) =>{
     //console.log(event)
-    return modeEvents[mode](x, y, offsetX, offsetY)
+    return modeEvents[mode](x, y, offsetX- props.clickRadius , offsetY- props.clickRadius )
   } 
   const modeEvents:{ [key: string]: (x:number,y:number,offsetX:number,offsetY:number) =>void }  = {
     // "place": addRepEvent,
@@ -292,7 +292,7 @@ export function GotPage(props:repPage) {
             setBackground(newBGsPlusRepInfo.index.background)
 
 
-          }, 200);
+          }, 80);
         })     
   }
 
@@ -310,7 +310,8 @@ export function GotPage(props:repPage) {
       pngFile.async("blob")
         .then((mapblob:Blob) => newBGsPlusRepInfo[saveIndex].background = mapblob)
     } catch (error) {
-      console.log("Catching Error:" + error)
+      alert(error)
+      //console.log("Catching Error:" + error)
     }
   }
 
