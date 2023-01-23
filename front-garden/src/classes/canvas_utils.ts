@@ -1,4 +1,4 @@
-import {CanvasUtilBase} from "../react/canvas_component"
+import {CanvasUtilBase} from "../components/canvas_component"
 
 import { get_image } from "./image_lookup";
 import { getVisibleItemBy, VisibleItem} from "./visibleRep";
@@ -103,6 +103,7 @@ export class CanvasControl implements CanvasUtilBase {
       let visualReps = [];
       for (let i = 0; i < rep_list.length; i++) {
         rep = rep_list[i];
+        // console.log(rep)
         visualReps.push(
           getVisibleItemBy(["src"],get_image(rep["icon"]), rep["x"], rep["y"])
         );

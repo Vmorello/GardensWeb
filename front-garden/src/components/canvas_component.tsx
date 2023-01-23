@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, UIEventHandler } from 'react';
 
-import {CanvasControl} from '../js/canvas_utils';
+import {CanvasControl} from '../classes/canvas_utils';
 
 export interface CanvasUtilBase {
   canvas:HTMLCanvasElement
@@ -34,7 +34,7 @@ export function CanvasComp(props:{
   background?:string|Blob
 }){
 
-  const refreshRate = 20  
+  const refreshRate = 100 
 
   const canvas_ref = React.createRef<HTMLCanvasElement>()
   const canvasState: canvasStateType = {
@@ -48,11 +48,11 @@ export function CanvasComp(props:{
     const canvas_current = canvas_ref.current
     const canvas_util = new CanvasControl(canvas_current!)
 
+    console.log("setting up canvas util")
     setCanvas({
       ref: canvas_ref,
       util: canvas_util
     })
-
     // canvas_util.setup(props)
   }, [])
 
