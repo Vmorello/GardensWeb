@@ -278,6 +278,7 @@ export function GotPage(props:repPage) {
             loadFunction(file, newBGsPlusRepInfo, saveIndex)
           })
 
+          //change to a asynto line up with all the promises in the function above
           setTimeout(()=> {
             // console.log("newAllInfo" , newBGsPlusRepInfo)
             setAllBGsPlusRepInfo(newBGsPlusRepInfo)
@@ -292,7 +293,7 @@ export function GotPage(props:repPage) {
             setBackground(newBGsPlusRepInfo.index.background)
 
 
-          }, 80);
+          }, 180);
         })     
   }
 
