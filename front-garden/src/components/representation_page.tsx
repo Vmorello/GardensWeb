@@ -234,7 +234,7 @@ export function GotPage(props:repPage) {
 
   //==================Card button Actions =======================
 
-  const  importButt = async() => {
+  const  importButt = () => {
     let zipFile
       const inputFileObject = document.getElementById("jsonLoadInsert") as HTMLInputElement;
       if (inputFileObject.files === null) {
@@ -245,7 +245,7 @@ export function GotPage(props:repPage) {
     }
 
 
-  const demoButt = async() => {
+  const demoButt = () => {
       console.log(props.demoPath)
       fetch(props.demoPath)
         .then((rep:Response)=>{return(rep.blob())})
