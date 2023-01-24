@@ -234,7 +234,7 @@ export function GotPage(props:repPage) {
 
   //==================Card button Actions =======================
 
-  const importButt = () => {
+  const  importButt = async() => {
     let zipFile
       const inputFileObject = document.getElementById("jsonLoadInsert") as HTMLInputElement;
       if (inputFileObject.files === null) {
@@ -245,7 +245,7 @@ export function GotPage(props:repPage) {
     }
 
 
-  const demoButt = () => {
+  const demoButt = async() => {
       console.log(props.demoPath)
       fetch(props.demoPath)
         .then((rep:Response)=>{return(rep.blob())})
@@ -254,62 +254,60 @@ export function GotPage(props:repPage) {
   }
     
 
-  const buildFromZip = (zipFile:Blob) =>{
+  const buildFromZip = async(zipFile:Blob) =>{
 
     resetDiary()
 
-    console.log(zipFile)
+    // console.log(zipFile)
+    const newBGsPlusRepInfo = {} as dict_fullPageRepresentation
 
-    JSZip.loadAsync(zipFile)
-        .then((zip)=>{
-          const newBGsPlusRepInfo = {} as dict_fullPageRepresentation
-          zip.forEach((relativePath, file)=>{
-            if (file.dir) {return}
+    const zip = await JSZip.loadAsync(zipFile)
 
-            //console.log("iterating on", file);
-            const path = relativePath.split("/")
+    await zip.forEach( async (relativePath, file)=>{
+      if (file.dir) {return}
 
-            const filename = path[1]
-            const saveIndex = path[0]
+      //console.log("iterating on", file);
+      const path = relativePath.split("/")
 
-            const loadFunction = getLoadFunction(filename)
-            if (loadFunction===undefined) {return}
+      const filename = path[1]
+      const saveIndex = path[0]
 
-            loadFunction(file, newBGsPlusRepInfo, saveIndex)
-          })
+      const loadFunction = getLoadFunction(filename)
+      if (loadFunction===undefined) {return}
 
-          //change to a asynto line up with all the promises in the function above
-          setTimeout(()=> {
-            // console.log("newAllInfo" , newBGsPlusRepInfo)
-            setAllBGsPlusRepInfo(newBGsPlusRepInfo)
+      await loadFunction(file, newBGsPlusRepInfo, saveIndex)
 
-            setCurrentRepInfo(newBGsPlusRepInfo.index.repInfo) 
-            setLength(newBGsPlusRepInfo.index.length)
-            setWidth(newBGsPlusRepInfo.index.width)
-            setidNumeration(newBGsPlusRepInfo.index.index)
+      // console.log("saveIndex" , saveIndex )
+      if (saveIndex==="index"){
+        setCurrentRepInfo(newBGsPlusRepInfo.index.repInfo) 
+        setLength(newBGsPlusRepInfo.index.length)
+        setWidth(newBGsPlusRepInfo.index.width)
+        setidNumeration(newBGsPlusRepInfo.index.index)
 
-            setCurrentPageID("index")
-            
-            setBackground(newBGsPlusRepInfo.index.background)
+        setCurrentPageID("index")
+        
+        setBackground(newBGsPlusRepInfo.index.background)
 
+      }
 
-          }, 180);
-        })     
-  }
-
-  const importJsonRep = (jsonFile:JSZip.JSZipObject, newBGsPlusRepInfo:dict_fullPageRepresentation, saveIndex:string)=> {
-    jsonFile.async("string")
-      .then((allRepInfoString)=> JSON.parse(allRepInfoString))
-      .then((json:fullPageRepresentation)=> {
-        console.log(json)
-        newBGsPlusRepInfo[saveIndex] = json
     })
+    // console.log("newAllInfo" , newBGsPlusRepInfo)
+    setAllBGsPlusRepInfo(newBGsPlusRepInfo) 
+    setMode("select")
   }
 
-  const importMap = (pngFile:JSZip.JSZipObject, newBGsPlusRepInfo:dict_fullPageRepresentation, saveIndex:string)=> {
+  const importJsonRep = async (jsonFile:JSZip.JSZipObject, newBGsPlusRepInfo:dict_fullPageRepresentation, saveIndex:string)=> {
+    const allRepInfoString = await jsonFile.async("string")
+    const json:fullPageRepresentation =  await JSON.parse(allRepInfoString)
+    // console.log(json)
+    newBGsPlusRepInfo[saveIndex] = json
+  }
+
+  const importMap = async (imageFile:JSZip.JSZipObject, newBGsPlusRepInfo:dict_fullPageRepresentation, saveIndex:string)=> {
+    
     try {
-      pngFile.async("blob")
-        .then((mapblob:Blob) => newBGsPlusRepInfo[saveIndex].background = mapblob)
+      const mapblob:Blob = await imageFile.async("blob")
+      newBGsPlusRepInfo[saveIndex].background = mapblob
     } catch (error) {
       alert(error)
       //console.log("Catching Error:" + error)
