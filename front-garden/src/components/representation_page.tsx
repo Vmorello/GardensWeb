@@ -41,7 +41,7 @@ type dict_fullPageRepresentation = {[key: string]: fullPageRepresentation}
 
 export function GotPage(props:repPage) {
 
-  const [currentRepInfo,setCurrentRepInfo] = useState([] as Array<representation>);
+  //const [currentRepInfo,setCurrentRepInfo] = useState([] as Array<representation>);
   const [allBGsPlusRepInfo, setAllBGsPlusRepInfo] = useState(
     {index:  
       { background: props.background, 
@@ -56,23 +56,21 @@ export function GotPage(props:repPage) {
 
   const [mode,setMode] = useState("place");
   //const [user,setUser] = useState(props.user);
-  const [length,setLength] = useState(props.length);
-  const [width,setWidth] = useState(props.width);
+  // const [length,setLength] = useState(props.length);
+  // const [width,setWidth] = useState(props.width);
   const [currentItem, setCurrentItem] = useState(props.startIcon);
   const [diary,setDiary] = useState({
     x: 0,
     y: 0,
     info_on_location: [] as Array<representation>,
   });
-  const [background,setBackground] = useState(props.background)
+  // const [background,setBackground] = useState(props.background)
   const [idNumeration,setidNumeration] = useState("0");
 
 
-  // useEffect(()=>{
-  //   if (typeof window !== 'undefined') {
-  //     setWidth(window.innerWidth-10)
-  //     setLength(window.innerHeight-100)
-  // }},[])
+  useEffect(()=>{
+    console.log(allBGsPlusRepInfo)
+  })
 
   
 
@@ -108,8 +106,8 @@ export function GotPage(props:repPage) {
     x = x + offsetX 
     y = y + offsetY 
 
-    const info_copy = currentRepInfo.slice()
-    info_copy.push({
+    const info_copy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
+    info_copy[currentPageID].repInfo.push({
         "icon": currentItem,
         "x": x,
         "y": y,
@@ -118,9 +116,9 @@ export function GotPage(props:repPage) {
         "visibleName" : currentItem,
         "link":false
     })
-    // console.log(idNumeration+1)
     setidNumeration(idNumeration+1)
-    setCurrentRepInfo(info_copy)
+    
+    setAllBGsPlusRepInfo(info_copy)
   }
 
 
@@ -129,7 +127,7 @@ export function GotPage(props:repPage) {
     x = x + offsetX
     y = y + offsetY
 
-    let info_copy = currentRepInfo.slice()
+    let info_copy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
 
     // see if you test this vs select 
     const notInRange = (listOut:Array<representation>,item:representation)=> {
@@ -141,9 +139,10 @@ export function GotPage(props:repPage) {
         }
       return listOut
     }
-    info_copy = info_copy.reduce(notInRange,[])
+    info_copy[currentPageID].repInfo = 
+            info_copy[currentPageID].repInfo.reduce(notInRange,[])
 
-    setCurrentRepInfo(info_copy)
+    setAllBGsPlusRepInfo(info_copy)
   }
 
 
@@ -151,7 +150,7 @@ export function GotPage(props:repPage) {
     const selectX=x +offsetX
     const selectY=y +offsetY
 
-      const info_on_location = currentRepInfo.filter((item) => 
+      const info_on_location = allBGsPlusRepInfo[currentPageID].repInfo.filter((item) => 
         {return item["x"]+ props.clickRadius > selectX && 
             item["x"]- props.clickRadius < selectX && 
             item["y"]+ props.clickRadius > selectY && 
@@ -170,9 +169,6 @@ export function GotPage(props:repPage) {
     return modeEvents[mode](x, y, offsetX- props.clickRadius , offsetY- props.clickRadius )
   } 
   const modeEvents:{ [key: string]: (x:number,y:number,offsetX:number,offsetY:number) =>void }  = {
-    // "place": addRepEvent,
-    // "select":selectionEvent,
-    // "remove":removeRepEvent
     "place": addRep,
     "select":selection,
     "remove":removeRep
@@ -182,37 +178,24 @@ export function GotPage(props:repPage) {
 
 
   const goToNestedLink = (childID:string, parentID:string) => () => {
-
-   // console.log(allBGsPlusRepInfo)
-
-    //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
-    allBGsPlusRepInfo[parentID] = {width:width, length:length, background: background, 
-      repInfo: currentRepInfo, index: idNumeration,}
-    
-    setCurrentRepInfo(allBGsPlusRepInfo[childID].repInfo) 
-    setBackground(allBGsPlusRepInfo[childID].background)
-    setLength(allBGsPlusRepInfo[childID].length)
-    setWidth(allBGsPlusRepInfo[childID].width)
     setidNumeration(allBGsPlusRepInfo[childID].index)
-
-    setAllBGsPlusRepInfo(allBGsPlusRepInfo)
     setCurrentPageID(childID)
-
     resetDiary()
   } 
 
   const addNestedRep = (id:string) => () => {
 
-    const info_copy = currentRepInfo.slice()
-    const listIndex = info_copy.findIndex(indexOf => id === indexOf.id)
-    info_copy[listIndex]["link"] = true
-    setCurrentRepInfo(info_copy)
+    let info_copy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
+    // 
+    // const info_copy = currentRepInfo.slice()
+    const listIndex = info_copy[currentPageID].repInfo.findIndex((indexOf:representation) => id === indexOf.id)
+    info_copy[currentPageID].repInfo[listIndex]["link"] = true
 
     //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
-    allBGsPlusRepInfo[id] = {width:1000, length:920, background: undefined, index: "0",
+    info_copy[id] = {width:1000, length:920, background: undefined, index: "0",
       repInfo:[{icon:"fort",x:20,y:20,data:[],id:"index",visibleName:"Go Back", link:true}]
     }
-    setAllBGsPlusRepInfo(allBGsPlusRepInfo)
+    setAllBGsPlusRepInfo(info_copy)
   }
 
 
@@ -277,21 +260,13 @@ export function GotPage(props:repPage) {
 
       await loadFunction(file, newBGsPlusRepInfo, saveIndex)
 
-      // console.log("saveIndex" , saveIndex )
       if (saveIndex==="index"){
-        setCurrentRepInfo(newBGsPlusRepInfo.index.repInfo) 
-        setLength(newBGsPlusRepInfo.index.length)
-        setWidth(newBGsPlusRepInfo.index.width)
         setidNumeration(newBGsPlusRepInfo.index.index)
-
         setCurrentPageID("index")
-        
-        setBackground(newBGsPlusRepInfo.index.background)
-
       }
-
     })
-    // console.log("newAllInfo" , newBGsPlusRepInfo)
+    console.log(newBGsPlusRepInfo)
+
     setAllBGsPlusRepInfo(newBGsPlusRepInfo) 
     setMode("select")
   }
@@ -326,9 +301,9 @@ export function GotPage(props:repPage) {
   const exportButt = ()=> {
 
       //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
-      allBGsPlusRepInfo[currentPageID] = {width:width, length:length, background: background, 
-        repInfo: currentRepInfo, index: idNumeration,}
-      setAllBGsPlusRepInfo(allBGsPlusRepInfo)
+      // allBGsPlusRepInfo[currentPageID] = {width:width, length:length, background: background, 
+      //   repInfo: allBGsPlusRepInfo[currentPageID].repInfo, index: idNumeration,}
+      // setAllBGsPlusRepInfo(allBGsPlusRepInfo)
 
       let zip = new JSZip();
       let folder 
@@ -369,18 +344,29 @@ export function GotPage(props:repPage) {
 
       const inputFile = inputFileObject.files[0]
       
-      setBackground(inputFile)
+      // setBackground(inputFile)
 
       const imageURL = URL.createObjectURL(inputFile)
       const tempImage = new Image();
+
+      let info_copy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
+      info_copy[currentPageID].background = inputFile
+
       tempImage.addEventListener("load", ()=>{
-        setLength(tempImage.naturalHeight)
-        setWidth(tempImage.naturalWidth)
+        info_copy[currentPageID].length =  tempImage.naturalHeight
+        info_copy[currentPageID].width =  tempImage.naturalWidth
+        setAllBGsPlusRepInfo(info_copy)
       })
       tempImage.src = imageURL
 
       //resetRep()
       
+  }
+
+  const setCurrentRepInfo = (newRepInfo:Array<representation>) => {
+    let info_copy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
+    info_copy[currentPageID].repInfo = newRepInfo
+    setAllBGsPlusRepInfo(info_copy)
   }
 
   return(
@@ -390,9 +376,11 @@ export function GotPage(props:repPage) {
         <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
       </Head>
       <div>
-        <CanvasComp repList={currentRepInfo} onPress={canvasOnclickSwitch} 
-              width={width} height={length} currentItem={currentItem} mode={mode}
-              background={background}/>
+        <CanvasComp repList={allBGsPlusRepInfo[currentPageID].repInfo} onPress={canvasOnclickSwitch} 
+              width={allBGsPlusRepInfo[currentPageID].width} 
+              height={allBGsPlusRepInfo[currentPageID].length} 
+              currentItem={currentItem} mode={mode}
+              background={allBGsPlusRepInfo[currentPageID].background}/>
         
         <CardSelect mode={mode} setMode={setModeDReset} setCurrentItem={setCurrentItem} 
                     currentItem={currentItem} pageRepList ={props.pageRepList}
@@ -400,7 +388,8 @@ export function GotPage(props:repPage) {
                     backgroundButt={backgroundButt}  demoButt={demoButt}  />
 
       <Diary diaryInfo={diary} addLink={addNestedRep} goToNestedLink={goToNestedLink}
-            currentRepInfo={currentRepInfo} setCurrentRepInfo={setCurrentRepInfo} currentPageID={currentPageID}/>
+            currentRepInfo={allBGsPlusRepInfo[currentPageID].repInfo} 
+            setCurrentRepInfo={setCurrentRepInfo} currentPageID={currentPageID}/>
     </div>
   </>
   )

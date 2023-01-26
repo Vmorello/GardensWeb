@@ -1,12 +1,10 @@
-import React from "react"
-
 import {representation} from "./representation_page"
 
 export function Diary(props:{diaryInfo:{x:number,y:number,info_on_location:Array<representation>}, 
                             addLink:(id:string)=>()=>void, 
                             goToNestedLink:(childID:string, parentID:string) => () => void ,
                             currentRepInfo:Array<representation>,
-                            setCurrentRepInfo:React.Dispatch<React.SetStateAction<representation[]>>, 
+                            setCurrentRepInfo:(newRepInfo: Array<representation>) => void, 
                             currentPageID:string})   
   {
 
@@ -76,6 +74,7 @@ export function Diary(props:{diaryInfo:{x:number,y:number,info_on_location:Array
   }
 
   function DairyLink(props:{link:boolean,goToNestedLink:()=>void, addLink:()=>void}) {
+    console.log("the link is", props.link)
     if (props.link) {
       return (<div>
           <button onClick={props.goToNestedLink} >Jump In</button>
