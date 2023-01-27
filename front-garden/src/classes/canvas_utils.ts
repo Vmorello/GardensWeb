@@ -34,7 +34,7 @@ export class CanvasControl implements CanvasUtilBase {
     }
 
     setup(props:setupInit){
-      console.log("set-up bg & hover")
+      // console.log("set-up bg & hover")
       this.setBackground(props.background);
 
       if (props.mode === "place") {

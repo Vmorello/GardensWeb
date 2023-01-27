@@ -48,7 +48,7 @@ export function CanvasComp(props:{
     const canvas_current = canvas_ref.current
     const canvas_util = new CanvasControl(canvas_current!)
 
-    console.log("setting up canvas util")
+    // console.log("setting up canvas util")
     setCanvas({
       ref: canvas_ref,
       util: canvas_util
@@ -78,7 +78,7 @@ export function CanvasComp(props:{
   const onCanvasPress = (event:{pageX:number,pageY:number})=>{
       if (canvas.util === undefined) {return}
 
-      console.log("Clicked Canvas")
+      // console.log("Clicked Canvas")
       props.onPress(event.pageX, event.pageY,
                     canvas.util.offset.x, 
                     canvas.util.offset.y)
