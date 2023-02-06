@@ -11,6 +11,7 @@ export function Diary(props:{diaryInfo:{x:number,y:number,info_on_location:Array
   {
 
   const newTextBoxAdded = (item:representation)=> ()=>{
+    // console.log(item)
     const info_copy = props.currentRepInfo.slice()
     const listIndex = info_copy.findIndex(indexOf => item.id === indexOf.id)
     info_copy[listIndex]["data"].push("write here")
@@ -33,6 +34,7 @@ export function Diary(props:{diaryInfo:{x:number,y:number,info_on_location:Array
   })
 
   const info_list =  props.diaryInfo.info_on_location.map((item:representation) => {
+    // console.log(item)
       return (
       <div key={`journalRep${item.id}`}>
           <input value={item.visibleName}

@@ -22,19 +22,20 @@ interface repPage {
 }
 
 export type representation = {icon: string, 
-  x: number, y: number,
-  data : Array<string>,
-  id :string,
-  visibleName  : string,
+  x: number, y: number
+  data : Array<string>
+  id :string
+  visibleName  : string
   link: boolean
+  radius: number
 }
 
 type fullPageRepresentation = {
-  background?: string|Blob, 
-  repInfo: Array<representation>, 
-  width:number, 
-  length:number,
-  index:string}
+  background?: string|Blob 
+  repInfo: Array<representation>
+  width:number 
+  length:number
+  pageID:string}
 
 type dict_fullPageRepresentation = {[key: string]: fullPageRepresentation}
 
@@ -48,7 +49,7 @@ export function GotPage(props:repPage) {
         repInfo:[] as Array<representation>, 
         width:props.width, 
         length:props.length,
-        index:"index"
+        pageID:"index"
       }
     } as dict_fullPageRepresentation)
     
@@ -116,10 +117,12 @@ export function GotPage(props:repPage) {
         "data": [],
         "id":idNumeration,
         "visibleName" : currentItem,
-        "link":false
+        "link":false,
+        "radius":props.clickRadius
+
     })
     // console.log(idNumeration+1)
-    setidNumeration(idNumeration+1)
+    setidNumeration(String(Number(idNumeration)+1))
     setCurrentRepInfo(info_copy)
   }
 
@@ -133,10 +136,10 @@ export function GotPage(props:repPage) {
 
     // see if you test this vs select 
     const notInRange = (listOut:Array<representation>,item:representation)=> {
-      if ( ! (item["x"]+ props.clickRadius > x && 
-        item["x"]- props.clickRadius < x && 
-        item["y"]+ props.clickRadius > y && 
-        item["y"]- props.clickRadius < y)){
+      if ( ! (item["x"]+ item["radius"] > x && 
+        item["x"]- item["radius"] < x && 
+        item["y"]+ item["radius"] > y && 
+        item["y"]- item["radius"] < y)){
           listOut.push(item)
         }
       return listOut
@@ -152,10 +155,10 @@ export function GotPage(props:repPage) {
     const selectY=y +offsetY
 
       const info_on_location = currentRepInfo.filter((item) => 
-        {return item["x"]+ props.clickRadius > selectX && 
-            item["x"]- props.clickRadius < selectX && 
-            item["y"]+ props.clickRadius > selectY && 
-            item["y"]- props.clickRadius < selectY})
+        {return item["x"]+ item["radius"] > selectX && 
+            item["x"]- item["radius"] < selectX && 
+            item["y"]+ item["radius"] > selectY && 
+            item["y"]- item["radius"] < selectY})
 
       // console.log(`${x} & ${y} ${info_on_location.entries}`)
       setDiary({
@@ -170,9 +173,6 @@ export function GotPage(props:repPage) {
     return modeEvents[mode](x, y, offsetX- props.clickRadius , offsetY- props.clickRadius )
   } 
   const modeEvents:{ [key: string]: (x:number,y:number,offsetX:number,offsetY:number) =>void }  = {
-    // "place": addRepEvent,
-    // "select":selectionEvent,
-    // "remove":removeRepEvent
     "place": addRep,
     "select":selection,
     "remove":removeRep
@@ -187,13 +187,13 @@ export function GotPage(props:repPage) {
 
     //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
     allBGsPlusRepInfo[parentID] = {width:width, length:length, background: background, 
-      repInfo: currentRepInfo, index: idNumeration,}
+      repInfo: currentRepInfo, pageID: idNumeration,}
     
     setCurrentRepInfo(allBGsPlusRepInfo[childID].repInfo) 
     setBackground(allBGsPlusRepInfo[childID].background)
     setLength(allBGsPlusRepInfo[childID].length)
     setWidth(allBGsPlusRepInfo[childID].width)
-    setidNumeration(allBGsPlusRepInfo[childID].index)
+    setidNumeration(allBGsPlusRepInfo[childID].pageID)
 
     setAllBGsPlusRepInfo(allBGsPlusRepInfo)
     setCurrentPageID(childID)
@@ -209,8 +209,8 @@ export function GotPage(props:repPage) {
     setCurrentRepInfo(info_copy)
 
     //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
-    allBGsPlusRepInfo[id] = {width:1000, length:920, background: undefined, index: "0",
-      repInfo:[{icon:"fort",x:20,y:20,data:[],id:"index",visibleName:"Go Back", link:true}]
+    allBGsPlusRepInfo[id] = {width:1000, length:920, background: undefined, pageID: "0",
+      repInfo:[{icon:"back_button",x:20,y:20,data:[],id:"index",visibleName:"Go Back", link:true, radius:64}]
     }
     setAllBGsPlusRepInfo(allBGsPlusRepInfo)
   }
@@ -282,7 +282,7 @@ export function GotPage(props:repPage) {
         setCurrentRepInfo(newBGsPlusRepInfo.index.repInfo) 
         setLength(newBGsPlusRepInfo.index.length)
         setWidth(newBGsPlusRepInfo.index.width)
-        setidNumeration(newBGsPlusRepInfo.index.index)
+        setidNumeration(newBGsPlusRepInfo.index.pageID)
 
         setCurrentPageID("index")
         
@@ -327,7 +327,7 @@ export function GotPage(props:repPage) {
 
       //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
       allBGsPlusRepInfo[currentPageID] = {width:width, length:length, background: background, 
-        repInfo: currentRepInfo, index: idNumeration,}
+        repInfo: currentRepInfo, pageID: idNumeration,}
       setAllBGsPlusRepInfo(allBGsPlusRepInfo)
 
       let zip = new JSZip();

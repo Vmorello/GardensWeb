@@ -1,5 +1,5 @@
 // import Image from "next/future/image";
-
+import back_button from "/public/common/back_button.png";
 // icons
 import alter from "/public/icons/alter.png";
 import camp from "/public/icons/camp.png";
@@ -38,6 +38,7 @@ import zucchini from "/public/plants/zucchini.png";
 type StaticImageData = { src: string; height: number; width: number; blurDataURL?: string; }
 
 const dict:{ [key: string]: StaticImageData } = {
+  "back_button":back_button,
   //icons
   "alter": alter,
   "camp": camp,
