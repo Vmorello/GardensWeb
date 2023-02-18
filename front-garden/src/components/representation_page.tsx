@@ -9,6 +9,7 @@ import JSZip from 'jszip';
 import {CanvasComp} from './canvas_component'
 import {Diary} from './diary_component'
 import {CardSelect} from './options_component'
+import {Debug} from './debug_'
 
 interface repPage {
   length: number 
@@ -26,7 +27,7 @@ export type representation = {icon: string,
   data : Array<string>
   id :string
   visibleName  : string
-  link: boolean
+  link?: boolean
   radius: number
 }
 
@@ -35,7 +36,9 @@ type fullPageRepresentation = {
   repInfo: Array<representation>
   width:number 
   length:number
-  pageID:string}
+  repNumeration:string
+  parentID?:string
+}
 
 type dict_fullPageRepresentation = {[key: string]: fullPageRepresentation}
 
@@ -49,7 +52,7 @@ export function GotPage(props:repPage) {
         repInfo:[] as Array<representation>, 
         width:props.width, 
         length:props.length,
-        pageID:"index"
+        repNumeration:"index",
       }
     } as dict_fullPageRepresentation)
     
@@ -69,40 +72,6 @@ export function GotPage(props:repPage) {
   const [idNumeration,setidNumeration] = useState("0");
 
 
-  // useEffect(()=>{
-  //   if (typeof window !== 'undefined') {
-  //     setWidth(window.innerWidth-10)
-  //     setLength(window.innerHeight-100)
-  // }},[])
-
-  
-
-  // -------- Event Functions & Util -------------// 
-
-  // const clear_button = () => {
-  //   return ((event:Event) => {
-  //     resetRep()
-  //   })
-  // }
-
-  // const size_adjustment = (side)=> {
-  //     return ((event:ChangeEvent) => {
-  //       if (side === "length") {
-  //         setLength(event.target.value)
-  //       } else if (side === "width"){
-  //         setWidth(event.target.value)
-  //       } 
-  //       resetRep() 
-  //     })
-  // }
-
-  // const resetRep = () => {
-  //     setCurrentRepInfo([])
-  //     setidNumeration(0)
-  //     resetDiary()
-  // }
-
-
   //================= Main Interaction with canvas with control card ==============
   
   const addRep = (x:number, y:number,offsetX:number,offsetY:number) =>{
@@ -117,7 +86,6 @@ export function GotPage(props:repPage) {
         "data": [],
         "id":idNumeration,
         "visibleName" : currentItem,
-        "link":false,
         "radius":props.clickRadius
 
     })
@@ -187,19 +155,21 @@ export function GotPage(props:repPage) {
 
     //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
     allBGsPlusRepInfo[parentID] = {width:width, length:length, background: background, 
-      repInfo: currentRepInfo, pageID: idNumeration,}
+      repInfo: currentRepInfo, repNumeration: idNumeration,}
     
     setCurrentRepInfo(allBGsPlusRepInfo[childID].repInfo) 
     setBackground(allBGsPlusRepInfo[childID].background)
     setLength(allBGsPlusRepInfo[childID].length)
     setWidth(allBGsPlusRepInfo[childID].width)
-    setidNumeration(allBGsPlusRepInfo[childID].pageID)
+    setidNumeration(allBGsPlusRepInfo[childID].repNumeration)
 
     setAllBGsPlusRepInfo(allBGsPlusRepInfo)
     setCurrentPageID(childID)
 
     resetDiary()
   } 
+
+
 
   const addNestedRep = (id:string) => () => {
 
@@ -209,8 +179,8 @@ export function GotPage(props:repPage) {
     setCurrentRepInfo(info_copy)
 
     //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
-    allBGsPlusRepInfo[id] = {width:1000, length:920, background: undefined, pageID: "0",
-      repInfo:[{icon:"back_button",x:20,y:20,data:[],id:"index",visibleName:"Go Back", link:true, radius:64}]
+    allBGsPlusRepInfo[id] = {width:1000, length:920, background: undefined,repNumeration: "0",
+      repInfo:[{icon:"back_button",x:20,y:20,data:[], id:"index", visibleName:"Go Back", link:true, radius:64}]
     }
     setAllBGsPlusRepInfo(allBGsPlusRepInfo)
   }
@@ -282,7 +252,7 @@ export function GotPage(props:repPage) {
         setCurrentRepInfo(newBGsPlusRepInfo.index.repInfo) 
         setLength(newBGsPlusRepInfo.index.length)
         setWidth(newBGsPlusRepInfo.index.width)
-        setidNumeration(newBGsPlusRepInfo.index.pageID)
+        setidNumeration(newBGsPlusRepInfo.index.repNumeration)
 
         setCurrentPageID("index")
         
@@ -299,7 +269,6 @@ export function GotPage(props:repPage) {
   const importJsonRep = async (jsonFile:JSZip.JSZipObject, newBGsPlusRepInfo:dict_fullPageRepresentation, saveIndex:string)=> {
     const allRepInfoString = await jsonFile.async("string")
     const json:fullPageRepresentation =  await JSON.parse(allRepInfoString)
-    // console.log(json)
     newBGsPlusRepInfo[saveIndex] = json
   }
 
@@ -327,7 +296,7 @@ export function GotPage(props:repPage) {
 
       //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
       allBGsPlusRepInfo[currentPageID] = {width:width, length:length, background: background, 
-        repInfo: currentRepInfo, pageID: idNumeration,}
+        repInfo: currentRepInfo, repNumeration: idNumeration,}
       setAllBGsPlusRepInfo(allBGsPlusRepInfo)
 
       let zip = new JSZip();
@@ -401,6 +370,8 @@ export function GotPage(props:repPage) {
 
       <Diary diaryInfo={diary} addLink={addNestedRep} goToNestedLink={goToNestedLink}
             currentRepInfo={currentRepInfo} setCurrentRepInfo={setCurrentRepInfo} currentPageID={currentPageID}/>
+
+      {/* <Debug pageID={currentPageID} /> */}
     </div>
   </>
   )

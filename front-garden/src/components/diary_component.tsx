@@ -48,7 +48,8 @@ export function Diary(props:{diaryInfo:{x:number,y:number,info_on_location:Array
           <div>
               <button onClick={newTextBoxAdded(item)} >New Entry</button>
           </div>
-          <DairyLink link={item.link} goToNestedLink={props.goToNestedLink(item.id, props.currentPageID)} addLink={props.addLink(item.id)} />
+          <DairyLink link={item.link} goToNestedLink={props.goToNestedLink(item.id, props.currentPageID)} 
+          addLink={props.addLink(item.id)} repID={item.id}/>
       </div>
       )
   })
@@ -77,14 +78,14 @@ export function Diary(props:{diaryInfo:{x:number,y:number,info_on_location:Array
   
   }
 
-  function DairyLink(props:{link:boolean,goToNestedLink:()=>void, addLink:()=>void}) {
+  function DairyLink(props:{link:boolean,goToNestedLink:()=>void, addLink:()=>void, repID:string}) {
     if (props.link) {
       return (<div>
-          <button onClick={props.goToNestedLink} >Jump In</button>
+          <button id={`link_btn_${props.repID}`} onClick={props.goToNestedLink} >Jump In</button>
       </div>)
     }
     return (<div>
-              <button onClick={props.addLink} >Add Link</button>
+              <button id={`link_btn_${props.repID}`} onClick={props.addLink} >Add Link</button>
           </div>)
   }
 

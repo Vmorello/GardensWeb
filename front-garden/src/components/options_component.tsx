@@ -43,7 +43,7 @@ function ModeSelectCard(props:{mode:string,setMode:(selected: string) => void,
     {
         return (
         <div>
-            <select value={props.mode} onChange={(event)=> props.setMode(event.target.value)}>
+            <select id={"action_select"} value={props.mode} onChange={(event)=> props.setMode(event.target.value)}>
                 <option value="select">Journal</option> 
                 <option value="place">Place</option>
                 <option  value="remove" >Remove</option>
