@@ -49,7 +49,7 @@ export function Diary(props:{diaryInfo:{x:number,y:number,info_on_location:Array
               <button onClick={newTextBoxAdded(item)} >New Entry</button>
           </div>
           <DairyLink link={item.link} goToNestedLink={props.goToNestedLink(item.id, props.currentPageID)} 
-          addLink={props.addLink(item.id)} repID={item.id}/>
+          addLink={props.addLink(item.id)} repID={item.id} currentPageID={props.currentPageID}/>
       </div>
       )
   })
@@ -78,14 +78,18 @@ export function Diary(props:{diaryInfo:{x:number,y:number,info_on_location:Array
   
   }
 
-  function DairyLink(props:{link:boolean,goToNestedLink:()=>void, addLink:()=>void, repID:string}) {
+  function DairyLink(props:{link:boolean,goToNestedLink:()=>void, addLink:()=>void, repID:string, currentPageID:string}) {
+    
     if (props.link) {
       return (<div>
           <button id={`link_btn_${props.repID}`} onClick={props.goToNestedLink} >Jump In</button>
       </div>)
     }
-    return (<div>
-              <button id={`link_btn_${props.repID}`} onClick={props.addLink} >Add Link</button>
-          </div>)
+    else if (props.currentPageID === "index") {
+      return (<div>
+                <button id={`link_btn_${props.repID}`} onClick={props.addLink} >Add Link</button>
+            </div>)
+    }
+    return <></>
   }
 

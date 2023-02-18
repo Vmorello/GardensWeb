@@ -27,7 +27,7 @@ export type representation = {icon: string,
   data : Array<string>
   id :string
   visibleName  : string
-  link?: boolean
+  link: boolean
   radius: number
 }
 
@@ -80,13 +80,14 @@ export function GotPage(props:repPage) {
 
     const info_copy = currentRepInfo.slice()
     info_copy.push({
-        "icon": currentItem,
-        "x": x,
-        "y": y,
-        "data": [],
-        "id":idNumeration,
-        "visibleName" : currentItem,
-        "radius":props.clickRadius
+        icon: currentItem,
+        x: x,
+        y: y,
+        data: [],
+        id:idNumeration,
+        visibleName : currentItem,
+        radius:props.clickRadius,
+        link:false
 
     })
     // console.log(idNumeration+1)
