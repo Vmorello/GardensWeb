@@ -13,6 +13,6 @@ export default function SendPage()
 
   return (
   <GotPage length={1400} width={2000} startIcon={"village"} title={"TenTowns"} 
-  background={map.src} pageRepList={iconList} clickRadius={28/2} demoPath={ "/demo/TenTown.zip"}/>
+  background={map.src} pageRepList={iconList} clickRadius={28/2} demoPath={ "/demo/TenTowns.zip"}/>
   )
 }

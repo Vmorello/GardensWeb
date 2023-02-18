@@ -268,13 +268,14 @@ export function GotPage(props:repPage) {
   }
 
   const importJsonRep = async (jsonFile:JSZip.JSZipObject, newBGsPlusRepInfo:dict_fullPageRepresentation, saveIndex:string)=> {
+    // console.log('reading the JSON')
     const allRepInfoString = await jsonFile.async("string")
     const json:fullPageRepresentation =  await JSON.parse(allRepInfoString)
     newBGsPlusRepInfo[saveIndex] = json
   }
 
   const importMap = async (imageFile:JSZip.JSZipObject, newBGsPlusRepInfo:dict_fullPageRepresentation, saveIndex:string)=> {
-    
+    // console.log('reading the background')
     try {
       const mapblob:Blob = await imageFile.async("blob")
       newBGsPlusRepInfo[saveIndex].background = mapblob
