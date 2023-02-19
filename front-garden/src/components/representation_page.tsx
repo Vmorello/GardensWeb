@@ -152,11 +152,13 @@ export function GotPage(props:repPage) {
 
   const goToNestedLink = (childID:string, parentID:string) => () => {
 
-   // console.log(allBGsPlusRepInfo)
+    // console.log(allBGsPlusRepInfo)
 
     //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
     allBGsPlusRepInfo[parentID] = {width:width, length:length, background: background, 
       repInfo: currentRepInfo, repNumeration: idNumeration,}
+
+    // console.log(allBGsPlusRepInfo)
     
     setCurrentRepInfo(allBGsPlusRepInfo[childID].repInfo) 
     setBackground(allBGsPlusRepInfo[childID].background)
@@ -180,7 +182,7 @@ export function GotPage(props:repPage) {
     setCurrentRepInfo(info_copy)
 
     //const allBG_RepCopy = JSON.parse(JSON.stringify(allBGsPlusRepInfo))
-    allBGsPlusRepInfo[id] = {width:1000, length:920, background: undefined,repNumeration: "0",
+    allBGsPlusRepInfo[id] = {width:1000, length:920, background: undefined,repNumeration: "1",
       repInfo:[{icon:"back_button",x:20,y:20,data:[], id:"index", visibleName:"Go Back", link:true, radius:64}]
     }
     setAllBGsPlusRepInfo(allBGsPlusRepInfo)
