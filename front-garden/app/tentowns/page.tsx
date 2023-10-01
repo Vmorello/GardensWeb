@@ -7,7 +7,7 @@ import map from "../../public/maps/Icewind_Dale.jpg"
 export default function SendPage()
 {
   const iconList = ["alter", "camp", "cave", "dock","dungeon","forge","fort","graveyard",
-  "house","mine","ruines","sheild","stable","tavern","temple","town1","town2","village"]
+  "house","mine","ruines","sheild","stable","tavern","temple","town1","town2","village","black_cover"]
 
   //Add theme here and that will be different between pages 
 

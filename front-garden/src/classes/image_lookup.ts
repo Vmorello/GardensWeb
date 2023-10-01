@@ -1,5 +1,6 @@
 // import Image from "next/future/image";
 import back_button from "/public/common/back_button.png";
+import black_cover from "/public/common/black_cover.png";
 // icons
 import alter from "/public/icons/alter.png";
 import camp from "/public/icons/camp.png";
@@ -39,6 +40,7 @@ type StaticImageData = { src: string; height: number; width: number; blurDataURL
 
 const dict:{ [key: string]: StaticImageData } = {
   "back_button":back_button,
+  "black_cover":black_cover
   //icons
   "alter": alter,
   "camp": camp,
