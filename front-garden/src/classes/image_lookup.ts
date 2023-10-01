@@ -40,7 +40,7 @@ type StaticImageData = { src: string; height: number; width: number; blurDataURL
 
 const dict:{ [key: string]: StaticImageData } = {
   "back_button":back_button,
-  "black_cover":black_cover
+  "black_cover":black_cover,
   //icons
   "alter": alter,
   "camp": camp,
